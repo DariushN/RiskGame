@@ -19,7 +19,6 @@
 #include "Continent.h"
 #include "MapLoaderUtility.h"
 #include <sstream>
-using namespace std;
 
 /*
  * 
