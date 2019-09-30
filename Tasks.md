@@ -7,7 +7,7 @@ Part 3 Dice:
   - [ ] Implement a Driver class Called DiceDriver.cpp (view requirements to test the Dice.cpp in assignment)
     
 Part 5 Cards deck/hand
- - [ ] Create Cards.h and Casrds.cpp files with class definitions (Deck object, hand object), functions (getters and setters only), members, and their implementations in the cpp file
+ - [X] Create Cards.h and Casrds.cpp files with class definitions (Deck object, hand object), functions (getters and setters only), members, and their implementations in the cpp file **Mackenzie**
  - [ ] Implement draw method
  - [ ] Implement exchange method
  - [ ] Implement CardsDriver.cpp which tests Cards.cpp according to guidelines
