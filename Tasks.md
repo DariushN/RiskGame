@@ -13,7 +13,7 @@ Part 5 Cards deck/hand
  - [ ] Implement CardsDriver.cpp which tests Cards.cpp according to guidelines
  
   Part 4 Player:
-  - [ ] Create Player.h and Player.cpp files with class definitions, functions (getters and setters only), members, and their implementations in the cpp file
+  - [x] Create Player.h and Player.cpp files with class definitions, functions (getters and setters only), members, and their implementations in the cpp file **Mack**
   - [ ] Implement reinforce, attack, and fortify functions, just console out some info in these methods for now
   - [ ] Implement PlayerDriver.cpp which tests Player.cpp according to guidelines
  
