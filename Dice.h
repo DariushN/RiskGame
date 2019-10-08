@@ -9,15 +9,15 @@ using namespace std;
 class Dice{
 	public:
 		Dice();
-		Dice(int a);
+		//Dice(int a);
 		~Dice();
-		void roll();
+		void roll(int n, int* container);
 		void printValues();
-
+		void activate(int* return_values);
 	private:
-		multiset<int> rolledValues = {};
-		int counts[6] = {};
-		double percentages[6] = {};
-
+		//multiset<int> rolledValues = {};
+		int* counts;
+		double* percentages;
+		int * n;
 };
 #endif /* DICE_H_ */
