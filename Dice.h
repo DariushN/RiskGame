@@ -14,6 +14,8 @@ class Dice{
 		void roll(int n, int* container);
 		void printValues();
 		void activate(int* return_values);
+                void printAverages();
+                int getCount(int a);
 	private:
 		//multiset<int> rolledValues = {};
 		int* counts;

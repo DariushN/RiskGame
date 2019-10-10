@@ -20,9 +20,15 @@ int main() {
 	Dice* d2 = new Dice();
 	int a[3];
 	for(int i = 0; i < 10; i++){
-		d1->activate(a);
+		d2->activate(a);
 	}
-	for(int i = 0; i < 3; i++) std::cout<<a[i] <<"\t";
+	for(long i = 0; i < 100000; i++){
+		d1->roll(3,a);
+		cout<< a[0] <<"\t" << a[1] <<"\t" <<a[2] <<"\n";
+	}
+	d1->printAverages();
+	d2->printAverages();
+	//for(int i = 0; i < 3; i++) std::cout<<a[i] <<"\t";
 	delete d1;
 	delete d2;
 	return 0;

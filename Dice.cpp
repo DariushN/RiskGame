@@ -7,7 +7,9 @@
 #include <vector>
 
 #define N_SIDES_DICE 6
+#if false
 #define printDEBUG
+#endif
 using namespace std;
 
 Dice::Dice(){
@@ -28,8 +30,8 @@ Dice::~Dice(){
 	//cout << "The sorted results are: ";
 	//printValues();
 	//cout << " and the percentage of 4s is " << percentages[3] << endl;
-	std::cout<<"\ncounts:\n";
-	for(int i = 0; i < N_SIDES_DICE; i++) std::cout<<"\t"<<counts[i]<<std::endl;
+	/*std::cout<<"\ncounts:\n";
+	for(int i = 0; i < N_SIDES_DICE; i++) std::cout<<"\t"<<counts[i]<<std::endl;*/
 	delete[] counts;
 	delete[] percentages;
 	delete[] n;
@@ -53,23 +55,45 @@ void Dice::activate(int* return_values){
 
 void Dice::roll(int a, int* b) {
 
+    for(int i  = 0; i < a; i++){
+        n[0]++;
+        int r = 1 + (rand() % N_SIDES_DICE); // Generate random number
+        b[i] = r;
+        #ifdef printDEBUG
+        cout << "r: " << r << endl;
+        #endif
+        ++counts[r-1];
+    }
+    
+    //Hardcoded Sort
+    int temp;
+    if(b[0] < b[1]){
+        temp = b[0];
+        b[0] = b[1];
+        b[1] = temp;
+    }
+    if(b[1] < b[2]){
+        temp = b[1];
+        b[1] = b[2];
+        b[2] = temp;
+    }
+    if(b[0] < b[1]){
+        temp = b[0];
+        b[0] = b[1];
+        b[1] = temp;
+    } 
 	
-	for(int i  = 0; i < a; i++){
-		n[0]++;
-		int r = 1 + (rand() % N_SIDES_DICE); // Generate random number
-		b[i] = r;
-		#ifdef printDEBUG
-		cout << "r: " << r << endl;
-		#endif
-		++counts[r-1];
-		n[0]++;
-		//rolledValues.insert(r); // Add rolled value to sorted container
-	}
-	//add hardcoded sort 
-	
-	// Calculate percentage and increment count array
-	for(int i = 0; i < N_SIDES_DICE; i++){
-		percentages[i] = counts[i] / (double) (n[0]);
-	}
+    // Calculate percentage and increment count array
+    for(int i = 0; i < N_SIDES_DICE; i++){
+            percentages[i] = counts[i] / (double) (n[0]);
+    }
+}
 
+void Dice::printAverages(){
+    std::cout<<"Percentages of Spins:\n";
+    for(int i=0; i <N_SIDES_DICE; i++) std::cout<<"\t"<<(i+1)<<": "<<percentages[i]*100<<"%\n";
+}
+
+int Dice::getCount(int a){
+    return counts[a+1];
 }
