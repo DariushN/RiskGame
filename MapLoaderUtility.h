@@ -32,7 +32,7 @@ Map MapBuilder(string filename){
     int state = 0;
     int tempInt;
     int Continent_counter = 0;
-    for( std::string line; getline( inputFile, temp ); ){
+    for( ; getline( inputFile, temp ); ){
         //std::cout<<temp<<endl;
         if(!temp.substr(0,4).compare("name")){
             a.setName(temp.substr(5,temp.size()-5));
@@ -76,9 +76,11 @@ Map MapBuilder(string filename){
                 tempTerritory->setName(temp2);
                 iss>>tempInt;
                 if(tempInt <= 0 || tempInt > Continent_counter){
-                    std::cout<<"Invalid continent index:\t"<<temp<<endl;
-                    getch();
-                    exit(1);
+                    std::cerr<<"Invalid continent index:\t"<<temp<<endl;
+                    std::cerr<<"Map file is corrupted.\n";
+                    a.Invalidate();
+                    /*getch();
+                    exit(1);*/
                 }else{
                     tempTerritory->setLocation( a.Continents[tempInt-1]);
                     a.Territories.push_back(tempTerritory);
@@ -110,7 +112,10 @@ Map MapBuilder(string filename){
             }
         }
     }
-
+    if(a.Continents.empty()|| a.Territories.empty()){
+        a.Invalidate();
+    }
+    a.isConnected();//Check if connected.
     //for(auto&& x:a.Continents) cout<<"\t"<< x.getID() <<endl;
     //std::cout<<"reached here"<<endl;
     return a;
