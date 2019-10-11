@@ -13,56 +13,63 @@
 using namespace std;
 
 Dice::Dice(){
+
+	// Initialize seed for the random function
 	int seed = time(0);
 	#ifdef printDEBUG
 	std::cout << "seed value is:\t" << seed << std::endl;
 	#endif
 	srand(seed);
+
+	// Initialize array keeping track of instances of dice values
 	counts = new int[N_SIDES_DICE];
 	for(int i = 0; i < N_SIDES_DICE; i++) counts[i] = 0;
+
+	// Initialize array keeping track of the percentage of values rolled
 	percentages = new double[N_SIDES_DICE];
+
+	// Initialize variable to keep track of how many rolls there have been so far
 	n = new int[1];
 	n[0] = 0;
 }
 
 
 Dice::~Dice(){
-	//cout << "The sorted results are: ";
-	//printValues();
-	//cout << " and the percentage of 4s is " << percentages[3] << endl;
-	/*std::cout<<"\ncounts:\n";
-	for(int i = 0; i < N_SIDES_DICE; i++) std::cout<<"\t"<<counts[i]<<std::endl;*/
+	// Delete pointers
 	delete[] counts;
 	delete[] percentages;
 	delete[] n;
 }
 
-/*
-void Dice::printValues() {
-	int length = rolledValues.size();
-	for (int i = 0; i < length; i++) {
-		cout << *rolledValues.begin()+i << ", ";
-	}
-}*/
 
 void Dice::activate(int* return_values){
+
+	// Initialize array to 0
 	for(int i = 0; i < 3; i++) return_values[i] = 0;
+
 	int a;
+
+	// Ask user for input
 	std::cout<<"How many dice to roll?\t";
 	std::cin>> a;
+
+	// Roll dice
 	roll(a,return_values);
 }
 
+// Roll dice
 void Dice::roll(int a, int* b) {
 
     for(int i  = 0; i < a; i++){
-        n[0]++;
+        n[0]++; // Increment roll counter
+
         int r = 1 + (rand() % N_SIDES_DICE); // Generate random number
-        b[i] = r;
+        b[i] = r; // Store random number
+
         #ifdef printDEBUG
         cout << "r: " << r << endl;
         #endif
-        ++counts[r-1];
+        ++counts[r-1]; // Increment array of counts
     }
     
     //Hardcoded Sort
@@ -83,17 +90,19 @@ void Dice::roll(int a, int* b) {
         b[1] = temp;
     } 
 	
-    // Calculate percentage and increment count array
+    // Calculate percentage of each dice value up to this point
     for(int i = 0; i < N_SIDES_DICE; i++){
             percentages[i] = counts[i] / (double) (n[0]);
     }
 }
 
+// Print the percentage array
 void Dice::printAverages(){
     std::cout<<"Percentages of Spins:\n";
     for(int i=0; i <N_SIDES_DICE; i++) std::cout<<"\t"<<(i+1)<<": "<<percentages[i]*100<<"%\n";
 }
 
+// Getter for the count array
 int Dice::getCount(int a){
     return counts[a+1];
 }
