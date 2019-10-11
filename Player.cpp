@@ -1,33 +1,46 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   Player.cpp
- * Author: t_filler
- * 
- * Created on September 4, 2019, 8:55 PM
- */
-
 #include "Player.h"
+#include <cstdlib>
+#include <iostream>
+#include <string>
+class Dice;
 
 Player::Player() {
-}
-
-Player::Player(std::string Name, int Id){
-    name = Name;
-    id = Id;
+	name = new std::string("");
+	id = new int(1);
+	dice = new Dice();
 }
 
 std::string Player::getName(){
-    return name;
+    return *name;
 }
 
-Player::Player(const Player& orig) {
+void Player::setName(std::string Name) {
+	*name = Name;
+}
+
+void Player::setId(int iD) {
+	*id = iD;
+}
+
+int Player::getId(){
+    return *id;
+}
+
+void Player::attack() {
+	std::cout << "Attacking" << std::endl;
+}
+
+void Player::reinforce() {
+	std::cout << "Reinforcing" << std::endl;
+}
+
+void Player::fortify() {
+	std::cout << "Fortifying" << std::endl;
 }
 
 Player::~Player() {
+	delete name;
+	delete id;
+	delete dice;
 }
 
