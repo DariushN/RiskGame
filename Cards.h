@@ -5,9 +5,10 @@
 #ifndef RISKGAME_CARDS_H
 #define RISKGAME_CARDS_H
 
-using namespace std;
 #include <string>
+#include "Territory.h"
 #include <vector>
+using namespace std;
 
 
 static int numberOfSetsTraded=0;
@@ -34,9 +35,12 @@ public:
 class Deck {
 public:
     Deck(vector<string*> territories); // Constructor
+    Deck(vector<Territory*> territories); // Constructor
     ~Deck(); // Destructor
     void initializeDeck(vector<string *> territories);
-    Card draw(Hand playerHand);
+    void initializeDeck(vector<Territory *> territories);
+    void draw(Hand* playerHand);
+    void setNbOfSetsTraded(int x);
     vector<Card*> Cards;
 };
 
