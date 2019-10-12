@@ -34,7 +34,11 @@ Card Deck::draw(Hand playerHand) {
     playerHand.Cards.push_back(Cards.back());
     Cards.pop_back();
 }
-Deck::~Deck() {}
+Deck::~Deck() {
+    for(auto&& x:Cards){
+        delete x;
+    }
+}
 
 Card::Card() {
 }
@@ -50,21 +54,67 @@ void Card::setTerritory(string territory) {
 void Card::setType(string type) {
     *this->type = type;
 }
-Card::~Card() {}
+Card::~Card() {
+    delete type;
+    delete territory;
+}
 
 Hand::Hand(){}; //Default constructor
 
-Hand::~Hand(){}; // Destructor
+Hand::~Hand(){
+    for(auto&& x:Cards)
+        delete x;
+}; // Destructor
 
-int Hand::exchange(){
-    numberOfSetsTraded++;
-    /*
-    if(numberOfSetsTraded<6){
-        for(auto&& y:Cards){
-
+bool Hand::isExtraArmyBonus(vector<string*> playerTerritories, vector<Card*> matchedCards) {
+    for(auto&& x:playerTerritories){
+        for(auto&& y:matchedCards){
+            if(y->getTerritory()==*x){
+                return true;
+            }
         }
-    } else{
+    }
+    return false;
+}
 
-    }*/
+//TODO: Add occupied territory rule
+int Hand::exchange(vector<string*> playerTerritories){
+    std::vector<Card*> matchedCards;
+    bool exchanged = false;
+    for(auto&& y:Cards){
+        matchedCards.push_back(y);
+        for(auto&& z:Cards){
+            if(y->getTerritory()!=z->getTerritory()&& y->getType()==z->getType()){
+                matchedCards.push_back(z);
+            }
+        }
+        if(matchedCards.size()>2){
+            break;
+        }
+        matchedCards.clear();
+    }
+    if(!matchedCards.empty()) {
+        for (int i=Cards.size()-1;i>=0;i--) {
+            for (auto &&y:matchedCards) {
+                if(Cards.at(i)->getTerritory()==y->getTerritory()){
+                    Cards.erase(Cards.begin()+i);
+                }
+            }
+        }
+        exchanged=true;
+        numberOfSetsTraded++;
+    }
+    bool isBonusEligible = isExtraArmyBonus(playerTerritories, matchedCards);
+    if(numberOfSetsTraded<6&&exchanged){
+        if(isBonusEligible)
+            return numberOfSetsTraded*2+4;
+        return numberOfSetsTraded*2+2;
+    }
+    if(numberOfSetsTraded>=6&&exchanged){
+        if(isBonusEligible)
+            return numberOfSetsTraded*3+4;
+        return numberOfSetsTraded*3;
+    }
+
 };
 
