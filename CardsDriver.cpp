@@ -19,12 +19,23 @@ int main(int argc, char** argv) {
     int nbOfInfantry=0;
     int nbOfArtillery=0;
     int nbOfCavalry=0;
-    vector<string*> territoriesOwned;
-    territoriesOwned.push_back(new string("Eastern-Australia"));
-    territoriesOwned.push_back(new string("Brazil"));
-    territoriesOwned.push_back(new string("Ukraine"));
-    territoriesOwned.push_back(new string("Iceland"));
-    territoriesOwned.push_back(new string("Peru"));
+    vector<Territory*> territoriesOwned;
+    Territory* t1 = new Territory();
+    Territory* t2 = new Territory();
+    Territory* t3 = new Territory();
+    Territory* t4 = new Territory();
+    Territory* t5 = new Territory();
+    t1->setName("Eastern-Australia");
+    t2->setName("Brazil");
+    t3->setName("Ukraine");
+    t4->setName("Iceland");
+    t5->setName("Peru");
+
+    territoriesOwned.push_back(t1);
+    territoriesOwned.push_back(t2);
+    territoriesOwned.push_back(t3);
+    territoriesOwned.push_back(t4);
+    territoriesOwned.push_back(t5);
 
 
 

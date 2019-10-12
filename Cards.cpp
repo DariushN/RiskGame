@@ -99,10 +99,10 @@ Hand::~Hand(){
         delete x;
 }; // Destructor
 
-bool Hand::isExtraArmyBonus(vector<string*> playerTerritories, vector<Card*> matchedCards) {
+bool Hand::isExtraArmyBonus(vector<Territory*> playerTerritories, vector<Card*> matchedCards) {
     for(auto&& x:playerTerritories){
         for(auto&& y:matchedCards){
-            if(y->getTerritory()==*x){
+            if(y->getTerritory()==x->getName()){
                 return true;
             }
         }
@@ -110,7 +110,7 @@ bool Hand::isExtraArmyBonus(vector<string*> playerTerritories, vector<Card*> mat
     return false;
 }
 
-int Hand::exchange(vector<string*> playerTerritories){
+int Hand::exchange(vector<Territory*> playerTerritories){
     std::vector<Card*> matchedCards;
     bool exchanged = false;
     for(auto&& y:Cards){
@@ -169,7 +169,7 @@ int Hand::exchange(vector<string*> playerTerritories){
     }
     if(numberOfSetsTraded>=6&&exchanged){
         if(isBonusEligible)
-            return numberOfSetsTraded*3+2;
+            return (numberOfSetsTraded-1)*3+2;
         return (numberOfSetsTraded-1)*3;
     }
     return 0;

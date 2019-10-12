@@ -28,8 +28,8 @@ class Hand{
 public:
     Hand(); //Default constructor
     ~Hand(); // Destructor
-    int exchange(vector<string*> playerTerritories);
-    bool isExtraArmyBonus(vector<string*> playerTerritories, vector<Card*> matchedCards);
+    int exchange(vector<Territory*> playerTerritories);
+    bool isExtraArmyBonus(vector<Territory*> playerTerritories, vector<Card*> matchedCards);
     vector<Card*> Cards;
 };
 class Deck {
