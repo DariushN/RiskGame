@@ -9,14 +9,16 @@
 
 using namespace std;
 
-
+// Constructor (initialize out of strings)
 Deck::Deck(vector<string *> territories) {
     initializeDeck(territories);
 }
+// Overloaded constructor (initialize out of territories)
 Deck::Deck(vector<Territory *> territories) {
     initializeDeck(territories);
 }
 
+// Initialize the deck to populate it with strings of territories
 void Deck::initializeDeck(vector<string *> territories) {
     //Creating a types vectors with the correct amount of each
     vector<string> types;
@@ -36,13 +38,12 @@ void Deck::initializeDeck(vector<string *> territories) {
         Cards.push_back(tempCard);
     }
 }
+// Initialize the deck to populate it with Territory objects
 void Deck::initializeDeck(vector<Territory *> territories) {
     //Creating a types vectors with the correct amount of each
     vector<string> types;
     int typeSize = territories.size()/3;
     types.insert(types.end(), typeSize, "Infantry");
-    //types.insert(types.end(), typeSize, "Infantry");
-    //types.insert(types.end(), typeSize, "Infantry");
     types.insert(types.end(), typeSize, "Artillery");
     types.insert(types.end(), typeSize, "Cavalry");
     //Shuffling types vector to get different ones in a row
@@ -58,35 +59,44 @@ void Deck::initializeDeck(vector<Territory *> territories) {
     }
     std::shuffle(std::begin(Cards), std::end(Cards), rng);
 }
+//Draw card from deck and place it on the Cards data member of Hand
 void Deck::draw(Hand* playerHand) {
     playerHand->Cards.push_back(Cards.back());
     Cards.pop_back();
 }
+//Setter for the number of sets traded
 void Deck::setNbOfSetsTraded(int x) {
     numberOfSetsTraded=x;
 }
+
+//Destructor
 Deck::~Deck() {
     for(auto&& x:Cards){
         delete x;
     }
 }
-
+//Constructor
 Card::Card() {
     type = new string("");
     territory = new string("");
 }
+//Getter of territory
 string Card::getTerritory() {
     return *territory;
 }
+//Getter of type
 string Card::getType() {
     return *type;
 }
+//Setter of territory
 void Card::setTerritory(string newTerritory) {
     *territory = newTerritory;
 }
+//setter of type
 void Card::setType(string newType) {
     *type = newType;
 }
+//Destructor
 Card::~Card() {
     delete type;
     delete territory;
@@ -94,11 +104,14 @@ Card::~Card() {
 
 Hand::Hand(){}; //Default constructor
 
+//Destructor
 Hand::~Hand(){
     for(auto&& x:Cards)
         delete x;
 }; // Destructor
 
+//Check if the player is eligible for 2 extra armies (Check Risk Rulebook)
+//Will compare the territories owned by players to the cards traded in
 bool Hand::isExtraArmyBonus(vector<Territory*> playerTerritories, vector<Card*> matchedCards) {
     for(auto&& x:playerTerritories){
         for(auto&& y:matchedCards){
@@ -110,9 +123,11 @@ bool Hand::isExtraArmyBonus(vector<Territory*> playerTerritories, vector<Card*> 
     return false;
 }
 
+//Exchange cards for points
 int Hand::exchange(vector<Territory*> playerTerritories){
     std::vector<Card*> matchedCards;
     bool exchanged = false;
+    //Check if there is a set of similar type
     for(auto&& y:Cards){
         matchedCards.push_back(y);
         for(auto&& z:Cards){
@@ -125,6 +140,7 @@ int Hand::exchange(vector<Territory*> playerTerritories){
         }
         matchedCards.clear();
     }
+    //Check if there is a set of each type
     if(matchedCards.empty()){
         bool searchDone=false;
         for(auto&& a:Cards){
@@ -145,6 +161,7 @@ int Hand::exchange(vector<Territory*> playerTerritories){
                 break;
         }
     }
+    //Remove cards from hand that are traded in
     if(!matchedCards.empty()) {
         int deleteCount=0;
         for (auto &&y:matchedCards) {
@@ -161,7 +178,9 @@ int Hand::exchange(vector<Territory*> playerTerritories){
         exchanged=true;
         numberOfSetsTraded++;
     }
+    //Check if player is bonus eligible
     bool isBonusEligible = isExtraArmyBonus(playerTerritories, matchedCards);
+    //Exchange set with points
     if(numberOfSetsTraded<6&&exchanged){
         if(isBonusEligible)
             return numberOfSetsTraded*2+4;

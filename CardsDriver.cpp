@@ -11,7 +11,8 @@
 
 int main(int argc, char** argv) {
     std::cout<<"Beginning program: Cards"<<endl;
-    Map MAP = MapBuilder("../Maps/risk.map");//test with proper case
+    //Initialize main tested objects
+    Map MAP = MapBuilder("../Maps/risk.map");
     Deck deck = Deck(MAP.Territories);
     std::cout <<"Newly generated deck: "<<endl;
 
@@ -30,7 +31,6 @@ int main(int argc, char** argv) {
     t3->setName("Ukraine");
     t4->setName("Iceland");
     t5->setName("Peru");
-
     territoriesOwned.push_back(t1);
     territoriesOwned.push_back(t2);
     territoriesOwned.push_back(t3);
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
     territoriesOwned.push_back(t5);
 
 
-
+    //Display the deck content
     for(auto&& x:deck.Cards){
         std::cout << "\tTerritory: " << x->getTerritory() << "\tType: " << x->getType() << endl;
         if(x->getType()=="Artillery")
@@ -48,9 +48,10 @@ int main(int argc, char** argv) {
         if(x->getType()=="Infantry")
             nbOfInfantry++;
     }
+    //Display summary of deck
     cout << "\nSummary of deck:" << endl << "Number of Infantry: "<< nbOfInfantry << endl
     << "Number of Cavalry: "<< nbOfCavalry << endl<<"Number of Artillery: "<< nbOfArtillery << endl;
-
+    //Create hand, and draw from it 5 times
     Hand* hand = new Hand();
     cout << "First draw:"<<endl;
     deck.draw(hand);
@@ -82,11 +83,13 @@ int main(int argc, char** argv) {
     for(auto&& x: hand->Cards){
         std::cout << "\tTerritory: " << x->getTerritory() << "\tType: " << x->getType() << endl;
     }
+    //Exchanging a set for points
     cout<< "Exchanging, with the resulting points: "<<hand->exchange(territoriesOwned)<<endl;
     cout<< "Hand content: " <<endl;
     for(auto&& x: hand->Cards){
         std::cout << "\tTerritory: " << x->getTerritory() << "\tType: " << x->getType() << endl;
     }
+    //Drawing 3 times and incrementing global nb of traded sets to display point upgrade
     cout << "Drawing three more times and incrementing the number of traded sets to 5" << endl;
     deck.draw(hand);
     deck.draw(hand);
@@ -97,10 +100,6 @@ int main(int argc, char** argv) {
     for(auto&& x: hand->Cards){
         std::cout << "\tTerritory: " << x->getTerritory() << "\tType: " << x->getType() << endl;
     }
-    /*cout<<"\nDeck Content:"<<endl;
-    for(auto&& x:deck.Cards){
-        std::cout << "\tTerritory: " << x->getTerritory() << "\tType: " << x->getType() << endl;
-    }*/
 
     return 0;
 }

@@ -16,10 +16,10 @@ class Card {
 public:
     Card(); // Default constructor
     ~Card(); // Destructor
-    string getType();
-    void setType(string type);
-    string getTerritory();
-    void setTerritory(string territory);
+    string getType(); //Getter
+    void setType(string type); //Setter
+    string getTerritory();//Getter
+    void setTerritory(string territory); //setter
 private:
     string* type;
     string* territory;
@@ -28,20 +28,20 @@ class Hand{
 public:
     Hand(); //Default constructor
     ~Hand(); // Destructor
-    int exchange(vector<Territory*> playerTerritories);
-    bool isExtraArmyBonus(vector<Territory*> playerTerritories, vector<Card*> matchedCards);
-    vector<Card*> Cards;
+    int exchange(vector<Territory*> playerTerritories); //Exchange set for points
+    bool isExtraArmyBonus(vector<Territory*> playerTerritories, vector<Card*> matchedCards); //Check if eligible for bonus
+    vector<Card*> Cards; // Cards in hand
 };
 class Deck {
 public:
     Deck(vector<string*> territories); // Constructor
     Deck(vector<Territory*> territories); // Constructor
     ~Deck(); // Destructor
-    void initializeDeck(vector<string *> territories);
-    void initializeDeck(vector<Territory *> territories);
-    void draw(Hand* playerHand);
-    void setNbOfSetsTraded(int x);
-    vector<Card*> Cards;
+    void initializeDeck(vector<string *> territories); // initialize and populate deck
+    void initializeDeck(vector<Territory *> territories); // initialize and populate deck
+    void draw(Hand* playerHand); // draw card from deck to the hand
+    void setNbOfSetsTraded(int x); // setter
+    vector<Card*> Cards; //cards in deck
 };
 
 #endif //RISKGAME_CARDS_H
