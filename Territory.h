@@ -19,6 +19,8 @@
 #include <vector> 
 
 class Continent;
+class Player;
+
 class Territory {
 public:
     int getID();//Returns PIN

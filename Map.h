@@ -17,6 +17,8 @@
 #include <vector> 
 #include "Continent.h"
 #include "Territory.h"
+class Territory;
+class Continent;
 
 class Map {
 public:
