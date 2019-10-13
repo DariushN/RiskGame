@@ -19,12 +19,13 @@
 
 
 Territory::Territory() {
+    //Allocate memory to pointers.
     ID = new int(1);
     name = new string("");
     troops = new int(1);
 }
 
-Territory::Territory(const Territory& orig) {
+Territory::Territory(const Territory& orig) {//Copy constructor
     neighbors = orig.neighbors;
     ID = orig.ID;
     name = orig.name;
@@ -35,54 +36,54 @@ Territory::Territory(const Territory& orig) {
 }
 
 Territory::~Territory() {
+    //Free allocated memory
     delete ID;
-    //std::cout<<"deleting ID of territory";
     delete troops;
     delete name;
     for(auto&& x:neighbors) delete x;
 }
 
-std::string Territory::getName(){
+std::string Territory::getName(){//Return name  
     return *name;
 }
 
-void Territory::setName(std::string a){
+void Territory::setName(std::string a){//Set the name
     *name = a;
 }
 
-int Territory::getTroops(){
+int Territory::getTroops(){//Return # of troops
     return *troops;
 }
 
-void Territory::setTroops(int a){
+void Territory::setTroops(int a){//Set # of troops
     *troops = a;
 }
 
-void Territory::incTroops(int a){
+void Territory::incTroops(int a){//Increase # of troops, default by 1
     *troops += a;
 }
 
-void Territory::decTroops(int a){
+void Territory::decTroops(int a){//Decrease # of , default by 1
     *troops -= a;
 }
 
-void Territory::addNeighbor(int a){
+void Territory::addNeighbor(int a){//Adds neighbor's PIN
     int *temp = new int(1);
     *temp = a;
     neighbors.push_back(temp);
 }
 
 
-void Territory::addAdj(Territory* a){
+void Territory::addAdj(Territory* a){//Adds pointer to neighbor to adjacency list
     adjacents.push_back(a);
 }
 
-bool Territory::isAdj(Territory* a){
+bool Territory::isAdj(Territory* a){//Checks if a points to a neighbor in the adjacency list
     for(auto&& x: adjacents) if(x==a) return true;
     return false;
 }
 
-std::string Territory::toString(){
+std::string Territory::toString(){//Returns relevant stats
     std::string temp = "";
     temp += "Name: "+*name+"\n";
     temp += "Owner: " + owner->getName()+"\n";
@@ -94,18 +95,18 @@ std::string Territory::toString(){
     return temp;
 }
 
-void Territory::setOwner(Player* a){
+void Territory::setOwner(Player* a){//Sets owner to player pointed to by a
     owner = a;
 }
 
-int Territory::getID(){
+int Territory::getID(){//Returns PIN
     return *ID;
 }
 
-void Territory::setID(int a){
+void Territory::setID(int a){//Sets PIN
     *ID = a;
 }
 
-void Territory::setLocation(Continent* a){
+void Territory::setLocation(Continent* a){//Sets location
     location = a;
 }

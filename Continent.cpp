@@ -14,13 +14,13 @@
 #include "Continent.h"
 #include <iostream>
 
-Continent::Continent() {
+Continent::Continent() {//Default constructor
     name = new string("");
     ID = new int(1);
     value = new int(1);
 }
 
-Continent::Continent(const Continent& orig) {
+Continent::Continent(const Continent& orig) {//Copy Constructor
     //std::cout<< "Continent copy constructor called"<<endl;
     this->ID = orig.ID;
     this->Territories = orig.Territories;
@@ -28,32 +28,37 @@ Continent::Continent(const Continent& orig) {
     this->value = orig.value;
 }
 
-Continent::~Continent() {
+Continent::~Continent() {//Destructor
     delete name;
     delete ID;
     delete value;
 }
 
-void Continent::setName(string a){
+void Continent::setName(string a){//Sets name
     *name = a;
 }
 
-int Continent::getID(){
+int Continent::getID(){//Return name
     return *ID;
 }
 
-void Continent::setID(int a){
+void Continent::setID(int a){//Sets PIN
     *ID = a;
 }
 
-void Continent::setValue(int a){
+void Continent::setValue(int a){//Sets Value
     *value = a;
 }
 
-int Continent::getValue(){
+int Continent::getValue(){//returns value
     return *value;
 }
 
-std::string Continent::getName(){
+std::string Continent::getName(){//return name
     return *name;
+}
+
+bool Continent::isContained(Territory* a){//returns true if a is contained in this continent
+    for(auto && x:Territories) if(x==a) return true;
+    return false;
 }

@@ -20,11 +20,9 @@
 #include "MapLoaderUtility.h"
 #include <sstream>
 
-/*
- * 
- */
-bool debug = false;
+
 int main(int argc, char** argv) {
+//int main2(int argc, char** argv) {
     std::cout<<"Beginning program"<<endl;
     //Map MAP = MapBuilder("Maps/lotr_invalid.map");//test if map is not connected
     Map MAP = MapBuilder("Maps/risk.map");//test with proper case

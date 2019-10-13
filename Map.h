@@ -20,16 +20,20 @@
 
 class Map {
 public:
-    Map();
-    Map(const Map& orig);
-    virtual ~Map();
-    std::vector <Territory*> Territories;
-    std::vector <Continent*> Continents;
-    std::string getName();
-    void setName(std::string a);
-    Territory* getTerritoryById(int a);
+    Map();//Default Constructor
+    Map(const Map& orig);//Copy Constructor
+    virtual ~Map();//Destructor
+    std::vector <Territory*> Territories;//Territories in map
+    std::vector <Continent*> Continents;//Continents in map
+    std::string getName();//Returns name of map
+    void setName(std::string a);//Sets name of map
+    Territory* getTerritoryById(int a);//Returns territory from Territories with id==a
+    bool isValid();//Returns if map is valid or not
+    bool isConnected();//Checks if map is connected or not, sets valid flag to false if not
+    void Invalidate();//Sets valid flag to false
 private:
-    std::string* name;
+    std::string* name;//name of map
+    bool* valid;//flag for if map is a valid map
 };
 
 #endif /* MAP_H */

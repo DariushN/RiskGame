@@ -21,33 +21,31 @@
 class Continent;
 class Territory {
 public:
-    int getID();
-    void setID(int a);
-    Territory();
-    Territory(const Territory& orig);
-    virtual ~Territory();
-    std::string getName();
-    void setName(std::string a);
-    int getTroops();
-    void setTroops(int a);
-    void incTroops(int a = 1);
-    void decTroops(int a = 1);
-    void addNeighbor(int a);
-    //vector<int> getNeighbors();
-    void addAdj(Territory *a);
-    bool isAdj(Territory *a);
-    std::string toString();
-    void setOwner(Player *a);
-    std::vector <int*> neighbors;
-    void setLocation(Continent* a);
-    std::vector <Territory*> adjacents;
+    int getID();//Returns PIN
+    void setID(int a);//Sets PIN
+    Territory();//Constructor
+    Territory(const Territory& orig);//Copy Constructor
+    virtual ~Territory();//Destructor
+    std::string getName();//Returns name
+    void setName(std::string a);//sets name
+    int getTroops();//returns # of troops
+    void setTroops(int a);//sets number of troops
+    void incTroops(int a = 1);//Increases number of troops
+    void decTroops(int a = 1);//Decreases number of troops
+    void addNeighbor(int a);//Adds PIN of neighbor
+    void addAdj(Territory *a);//Adds pointer to neighbor to adjacency vector
+    bool isAdj(Territory *a);//Checks if the territory is adjacent
+    std::string toString();//Returns string with the Territory's data
+    void setOwner(Player *a);//Sets the pointer to owner
+    std::vector <int*> neighbors;//vector of PINs of neighbors (not used)
+    void setLocation(Continent* a);//Sets Continent that it is contained in.
+    std::vector <Territory*> adjacents;//Vector containing the adjacency list.
+    Continent* location;//Continent that territory is part of.
 private:
-    int* ID;
-    std::string* name;
-    int* troops;
-    Continent* location;
-    
-    Player* owner;
+    int* ID;//PIN
+    std::string* name;//Name of Territory
+    int* troops;//Number of troops
+    Player* owner;//Owner of this territory.
 };
 
 #endif /* TERRITORY_H */
