@@ -7,9 +7,11 @@
 #include "Continent.h"
 #include "Territory.h"
 #include "Map.h"
+#include "Cards.h"
 class Territory;
 class Continent;
 class Map;
+class Hand;
 
 
 class Player {
@@ -30,8 +32,10 @@ public:
 	int getArmies();
 	void setArmies(int army);
 	void placeArmies(int armies);
-	//Needs a hand of Risk cards 
+	void printAdjacentCountries(std::vector<Territory*> territories);
 	Dice* dice;
+	Hand* hand;
+
 
 private:
     int* id;

@@ -19,6 +19,7 @@
 #include <vector> 
 
 class Continent;
+class Player;
 class Territory {
 public:
     int getID();
@@ -41,6 +42,7 @@ public:
     std::vector <int*> neighbors;
     void setLocation(Continent* a);
     std::vector <Territory*> adjacents;
+    Continent getLocation();
 private:
     int* ID;
     std::string* name;

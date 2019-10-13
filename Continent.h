@@ -16,6 +16,7 @@
 #include "Territory.h"
 #include <vector> 
 using namespace std;
+class Territory;
 
 
 class Continent {

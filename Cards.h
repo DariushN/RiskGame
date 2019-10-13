@@ -9,7 +9,7 @@
 #include "Territory.h"
 #include <vector>
 using namespace std;
-
+class Territory;
 
 static int numberOfSetsTraded=0;
 class Card {

@@ -109,3 +109,7 @@ void Territory::setID(int a){
 void Territory::setLocation(Continent* a){
     location = a;
 }
+
+Continent Territory::getLocation() {
+	return *location;
+}
