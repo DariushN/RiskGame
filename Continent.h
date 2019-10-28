@@ -7,7 +7,6 @@
 /* 
  * File:   Continent.h
  * Author: t_filler
- *
  * Created on September 4, 2019, 8:38 PM
  */
 
