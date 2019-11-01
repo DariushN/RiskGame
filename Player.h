@@ -33,14 +33,16 @@ public:
 	void setArmies(int army);//setter for armies
 	void placeArmies(int armies);//method to place armies on territories
 	void printAdjacentCountries(std::vector<Territory*> territories); //prints the adjacent territories
-	Dice* dice; //dice rolling facility object
-	Hand* hand; // hand of risk cards
-
-
+	Hand* getHand();
+	void setHand(Hand hand);
+	Dice* getDice();
+	void setDice(Dice dice);
 private:
     int* id; //id of a player
     std::string* name; //name of a player
     int* armies; //number of armies that a player has during his turn
+	Dice* dice; //dice rolling facility object
+	Hand* hand; // hand of risk cards
 };
 
 #endif /* PLAYER_H */

@@ -38,6 +38,22 @@ int Player::getId(){
     return *id;
 }
 
+Hand* Player::getHand(){
+	return hand;
+}
+
+void Player::setHand(Hand hand){
+	hand = hand;
+}
+
+Dice* Player::getDice(){
+	return dice;
+}
+
+void Player::setDice(Dice dice){
+	dice = dice;
+}
+
 void Player::attack(Map* map) {
 	std::cout << "Attacking" << std::endl;
 	while (true){
@@ -224,11 +240,14 @@ void Player::fortify() {
 			if(country2 == -1) break;
 
 			//validation on countries picked
-			if(country1 > count) {
+			if(country1 > count || country2 < 1) {
 				std::cout << "Please pick a valid starting country" << std::endl;
 				continue;
-			} else if(country2 > count) {
+			} else if(country2 > count || country2 < 1) {
 				std::cout << "Please pick a valid country to fortify" << std::endl;
+				continue;
+			} else if(country1 == country2) {
+				std::cout << "Please pick different countries" << std::endl;
 				continue;
 			} else if(this->lands[country1 - 1]->getTroops() <= 1) {
 				std::cout << "Starting country must have more than 1 army, please pick another country" << std::endl;
@@ -251,6 +270,9 @@ void Player::fortify() {
 				}else {
 					//increment troops on territory chosen
 					this->lands[country2 - 1]->incTroops(troops);
+					//decrement troops on country where armies are traded
+					this->lands[country1 - 1]->decTroops(troops);
+
 					std::cout << "Fortified " << this->lands[country2 - 1]->getName() << ", new total is " << this->lands[country2 - 1]->getTroops() << std::endl;
 					break;
 				}
@@ -267,7 +289,11 @@ void Player::printAdjacentCountries(std::vector<Territory*> territories) {
 	//prints adjacent territories for each territory in vector
 	std::cout << "Adjacent Countries: ";
 	for(std::vector<Territory>::size_type i = 0; i != territories.size(); i++) {
-		std::cout << territories[i]->getName() << "  ";
+		//only display countries owned by player
+		if(territories[i]->getOwner() != NULL && territories[i]->getOwner()->getName() == *this->name){
+			std::cout << territories[i]->getOwner()->getName();
+			std::cout << territories[i]->getName() << " ";
+		}
 	}
 	std::cout << "\n\n";
 }
@@ -276,11 +302,10 @@ void Player::reinforce(Map* map) {
 	std::cout << "Reinforcing" << std::endl;
 
 	//check if user owns a continent
-	int controlledContinents;
-	if(this->continents.size() < 1){
-		controlledContinents = 0;
-	} else {
-		for(std::vector<Continent>::size_type i = 0; i != this->continents.size(); i++) {
+	this->hasContinent(map);
+	int controlledContinents = 0;
+	if(this->continents.size() > 0){
+		for(std::vector<Continent>::size_type i = 0; i < this->continents.size(); i++) {
 			controlledContinents += this->continents[i]->getValue();
 		}
 	}
@@ -355,10 +380,33 @@ void Player::placeArmies(int armies) {
 	}
 }
 
+void Player::hasContinent(Map* map){
+	std::vector<Territory>::size_type counter = 0;
+	vector<Continent*> continents;
+	continents = map->Continents;
+
+	for(std::vector<Continent>::size_type i = 0; i< continents.size(); i++)
+	{
+		for(std::vector<Territory>::size_type k=0; k<this->lands.size(); k++)
+		{
+			if(continents[i]->getName() == this->lands[k]->location->getName())
+			{
+				counter += 1;
+				if(counter == continents[i]->Territories.size())
+				{
+					this->continents.push_back(continents[i]);
+				}
+			}
+		}
+		counter = 0;
+	}
+}
+
 Player::~Player() {
 	delete name;
 	delete id;
 	delete dice;
 	delete armies;
+	delete hand;
 }
 

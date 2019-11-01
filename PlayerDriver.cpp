@@ -23,34 +23,33 @@ int main(int argc, char** argv) {
 	std::cout << "Player Name: " << player2->getName() << std::endl;
 
 	//give player some initial territories
-	for(int i=0; i<10; i++) {
+	for(int i=0; i<4; i++) {
 		MAP.Territories[i]->setOwner(player);
 		player->lands.push_back(MAP.Territories[i]);
 	}
 
-	for(int i=20; i<30; i++) {
-		MAP.Territories[i]->setOwner(player);
-		player->lands.push_back(MAP.Territories[i]);
+	for(int i=4; i<15; i++) {
+		MAP.Territories[i]->setOwner(player2);
+		player2->lands.push_back(MAP.Territories[i]);
 	}
 
 	//Player owns a dice rolling facility
 	int x;
-	player->dice->activate(&x);
+	player->getDice()->activate(&x);
 	int y;
-	player->dice->activate(&y);
-	player->dice->printAverages();
+	player->getDice()->activate(&y);
+	player->getDice()->printAverages();
 
 	//player owns a hand of risk cards
 	Deck* deck = new Deck(MAP.Territories);
-	deck->draw(player->hand);
-	deck->draw(player->hand);
-	deck->draw(player->hand);
-	deck->draw(player->hand);
-	deck->draw(player->hand);
-
+	deck->draw(player->getHand());
+	deck->draw(player->getHand());
+	deck->draw(player->getHand());
+	deck->draw(player->getHand());
+	deck->draw(player->getHand());
 
 	//player has access to 3 function reinforce, attack, fortify
 	player->reinforce(&MAP);
-	player->attack();
+	player->attack(&MAP);
 	player->fortify();
 }
