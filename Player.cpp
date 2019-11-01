@@ -38,8 +38,144 @@ int Player::getId(){
     return *id;
 }
 
-void Player::attack() {
+void Player::attack(Map* map) {
 	std::cout << "Attacking" << std::endl;
+	while (true){
+	    cout<< "Would you like to attack? (y/n)"<<endl;
+        char input;
+        cin >> input;
+        if(input == 'n'){
+            return;
+        } else if(input != 'y') {
+            std::cout << "please enter y or n to proceed" << std::endl;
+            continue;
+        }
+        cout<<"Choose which country to attack from"<<endl;
+        for(int i = 1;i<=lands.size();i++){
+            cout<<i<<": "<<lands[i-1]->getName()<< "     Armies: " << this->lands[i-1]->getTroops() << std::endl;
+        }
+        cout<<"Which country would you like to attack from"<<endl;
+        int countryInput;
+        cin>>countryInput;
+        if (countryInput>lands.size()||countryInput<1){
+            cout<<"Invalid index"<<endl;
+            continue;
+        }
+        if(lands[countryInput-1]->getTroops()<2){
+            cout<<"Not enough army on territory"<<endl;
+            continue;
+        }
+        for(int i = 0;i<lands[countryInput-1]->adjacents.size();i++){
+            cout<<i+1<<": "<<lands[countryInput-1]->adjacents[i]->getName()<< std::endl;
+        }
+        cout<<"Which country would you like to attack"<<endl;
+        int countryAttackInput;
+        cin>>countryAttackInput;
+        Territory* attackedTerritory;
+        for(auto&& x: map->Territories){
+            if (x->getName() == lands[countryInput-1]->adjacents[countryAttackInput-1]->getName()){
+                attackedTerritory = x;
+                break;
+            }
+        }
+        if(attackedTerritory->getOwner()->getName()==getName()){
+            cout<<"Cannot attack your own territory"<<endl;
+            continue;
+        }
+        int maxAttackerDice = maxDiceToRoll(true, lands[countryInput-1]);
+        int maxDefenseDice = maxDiceToRoll(false, attackedTerritory);
+        cout<<"How many dices would the attacker want to roll? (1,"<<maxAttackerDice<<")"<<endl;
+        int attackerDiceNumber;
+        cin>>attackerDiceNumber;
+        if(attackerDiceNumber>maxAttackerDice||attackerDiceNumber<0)
+            continue;
+        cout<<"How many dices would the defense want to roll? (1,"<<maxDefenseDice<<")"<<endl;
+        int defenseDiceNumber;
+        cin>>defenseDiceNumber;
+        if(defenseDiceNumber>maxAttackerDice||defenseDiceNumber<0)
+            continue;
+        int attackerDiceResults[3];
+        int defenseDiceResults[3];
+        cout<<"Rolling dices"<<endl;
+        while(true){
+            dice->roll(attackerDiceNumber, attackerDiceResults);
+            cout<<attackedTerritory->getOwner()->getName();
+            attackedTerritory->getOwner()->dice->roll(defenseDiceNumber,defenseDiceResults);
+            cout<<"Attacker score is "<<attackerDiceResults[0]<<" and defense score is "<<defenseDiceResults[0]<<endl;
+            if(attackerDiceResults[0]>defenseDiceResults[0]){
+                cout<<"Attacker wins duel"<<endl;
+                attackedTerritory->decTroops(1);
+            }
+            else{
+                cout<<"Defense wins duel"<<endl;
+                lands[countryInput-1]->decTroops(1);
+            }
+            cout<<"Attacker country stats: "<<lands[countryInput-1]->getName()<< "     Armies: " << this->lands[countryInput-1]->getTroops() << std::endl;
+            cout<<"Defense country stats: "<<attackedTerritory->getName()<< "     Armies: " << attackedTerritory->getTroops() << std::endl;
+            if(lands[countryInput-1]->getTroops()<2){
+                cout<<"Attacker lost battle and can't attack anymore"<<endl;
+                continue;
+            }
+            if(attackedTerritory->getTroops()==0){
+                cout<<"Attacker wins battle and wins territory"<<endl;
+                //Remove territory lost fromd defense player's owned lands
+                lands.push_back(attackedTerritory);
+                remove(attackedTerritory->getOwner()->lands.begin(),attackedTerritory->getOwner()->lands.end(),attackedTerritory);
+                /*
+                for(int i=0;i<attackedTerritory->getOwner()->lands.size();i++){
+                    if(attackedTerritory->getOwner()->lands[i]->getName()==attackedTerritory->getName()){
+                        //attackedTerritory->getOwner()->lands.erase(lands.begin()+i);
+                        remove(attackedTerritory->getOwner()->lands.begin(),attackedTerritory->getOwner()->lands.end(),attackedTerritory);
+                        break;
+                    }
+                }*/
+                attackedTerritory->setOwner(this);
+                //Move army from attacked territory to new defeated territory
+                while(1) {
+                    std::cout << "How many troops would you like to move from " << this->lands[countryInput - 1]->getName()
+                              << " to " << this->lands.back()->getName() << std::endl;
+
+                    int troops;
+                    cin >> troops;
+
+                    if(troops > this->lands[countryInput - 1]->getTroops() - 1) { //must leave at least 1 troop on the territory
+                        std::cout << "Please pick a number less than "<< this->lands[countryInput - 1]->getTroops() << std::endl;
+                        continue;
+                    }else {
+                        //increment troops on territory chosen
+                        this->lands.back()->incTroops(troops);
+                        lands[countryInput-1]->decTroops(troops);
+                        std::cout << "Fortified " << this->lands.back()->getName() << ", new total is " << this->lands.back()->getTroops() << std::endl;
+                        break;
+                    }
+                }
+                break;
+
+            }
+            cout<<"Would you like to attack this country again?(y/n)"<<endl;
+            char repeatAttackInput;
+            cin >> repeatAttackInput;
+            if(repeatAttackInput == 'n'){
+                return;
+            } else if(repeatAttackInput != 'y') {
+                std::cout << "please enter y or n to proceed" << std::endl;
+                continue;
+            }
+        }
+	}
+}
+
+int Player::maxDiceToRoll(bool isAttacker, Territory *territory) {
+    if (isAttacker){
+        if(territory->getTroops()>3)
+            return 3;
+        return territory->getTroops()-1;
+    }
+    else{
+        if(territory->getTroops()>2)
+            return 2;
+        return territory->getTroops();
+    }
 }
 
 void Player::fortify() {

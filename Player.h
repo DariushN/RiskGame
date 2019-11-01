@@ -26,7 +26,8 @@ public:
     std::vector <Continent*> continents; //vector of continents that a player occupies
     void hasContinent(Map* map);//method to check if owns a continent
 	void reinforce(Map* map);//reinforce method
-	void attack();//attack method
+	void attack(Map* map);//attack method
+	int maxDiceToRoll(bool isAttacker, Territory* territory);
 	void fortify();//fortify method
 	int getArmies();//getter for armies
 	void setArmies(int army);//setter for armies

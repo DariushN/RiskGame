@@ -59,6 +59,7 @@ void Dice::activate(int* return_values){
 
 // Roll dice
 void Dice::roll(int a, int* b) {
+    for(int i = 0; i < 3; i++) b[i] = 0;
 
     for(int i  = 0; i < a; i++){
         n[0]++; // Increment roll counter

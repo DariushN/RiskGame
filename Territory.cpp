@@ -83,6 +83,10 @@ bool Territory::isAdj(Territory* a){//Checks if a points to a neighbor in the ad
     return false;
 }
 
+Player* Territory::getOwner() const {
+    return owner;
+}
+
 std::string Territory::toString(){//Returns relevant stats
     std::string temp = "";
     temp += "Name: "+*name+"\n";

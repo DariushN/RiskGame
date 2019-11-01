@@ -39,6 +39,7 @@ public:
     bool isAdj(Territory *a);//Checks if the territory is adjacent
     std::string toString();//Returns string with the Territory's data
     void setOwner(Player *a);//Sets the pointer to owner
+    Player* getOwner() const;
     std::vector <int*> neighbors;//vector of PINs of neighbors (not used)
     void setLocation(Continent* a);//Sets Continent that it is contained in.
     std::vector <Territory*> adjacents;//Vector containing the adjacency list.
