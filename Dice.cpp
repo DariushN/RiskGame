@@ -16,9 +16,6 @@ Dice::Dice(){
 
 	// Initialize seed for the random function
 	int seed = time(0);
-	#ifdef printDEBUG
-	std::cout << "seed value is:\t" << seed << std::endl;
-	#endif
 	srand(seed);
 
 	// Initialize array keeping track of instances of dice values
@@ -50,8 +47,10 @@ void Dice::activate(int* return_values){
 	int a;
 
 	// Ask user for input
-	std::cout<<"How many dice to roll?\t";
-	std::cin>> a;
+	do{
+		std::cout << "How many dice to roll? Please enter a number between 1 and 3:\t";
+		std::cin >> a;
+	} while(a > 3 || a <= 0);
 
 	// Roll dice
 	roll(a,return_values);
@@ -67,9 +66,6 @@ void Dice::roll(int a, int* b) {
         int r = 1 + (rand() % N_SIDES_DICE); // Generate random number
         b[i] = r; // Store random number
 
-        #ifdef printDEBUG
-        cout << "r: " << r << endl;
-        #endif
         ++counts[r-1]; // Increment array of counts
     }
     
