@@ -6,7 +6,7 @@
 #define RISKGAME_CARDS_H
 
 #include <string>
-#include "Territory.h"
+#include "Map.h"
 #include <vector>
 using namespace std;
 class Territory;

@@ -42,16 +42,8 @@ Hand* Player::getHand(){
 	return hand;
 }
 
-void Player::setHand(Hand hand){
-	hand = hand;
-}
-
 Dice* Player::getDice(){
 	return dice;
-}
-
-void Player::setDice(Dice dice){
-	dice = dice;
 }
 
 void Player::attack(Map* map) {
@@ -254,6 +246,7 @@ void Player::fortify() {
 				continue;
 			} else if(!this->lands[country1 - 1]->isAdj(this->lands[country2 - 1])) {
 				std::cout << "please pick countries that are adjacent" << std::endl;
+				continue;
 			}
 
 			//loop to get number of troops that user wants to move
@@ -291,7 +284,6 @@ void Player::printAdjacentCountries(std::vector<Territory*> territories) {
 	for(std::vector<Territory>::size_type i = 0; i != territories.size(); i++) {
 		//only display countries owned by player
 		if(territories[i]->getOwner() != NULL && territories[i]->getOwner()->getName() == *this->name){
-			std::cout << territories[i]->getOwner()->getName();
 			std::cout << territories[i]->getName() << " ";
 		}
 	}
@@ -394,6 +386,11 @@ void Player::hasContinent(Map* map){
 				counter += 1;
 				if(counter == continents[i]->Territories.size())
 				{
+					//check if continent is already owned by player
+					if (std::find(this->continents.begin(), this->continents.end(), continents[i]) != this->continents.end())
+					{
+						return;
+					}
 					this->continents.push_back(continents[i]);
 				}
 			}

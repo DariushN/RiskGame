@@ -4,8 +4,6 @@
 #include <string>
 #include <vector> 
 #include "Dice.h"
-#include "Continent.h"
-#include "Territory.h"
 #include "Map.h"
 #include "Cards.h"
 class Territory;
