@@ -29,6 +29,7 @@ public:
     void SelectMaps();
     void Setup();
     void printTerritories();
+    bool compliesWithA2Q2();
     void mainGameLoop();
     void mainGameLoop(Map* MAP, std::vector<Player*> players);
 private:
