@@ -206,3 +206,83 @@ void GameEngine::mainGameLoop(Map* MAP, std::vector<Player*> players){
 void GameEngine::printTerritories(){
     for(auto&& x:MAP->Territories) cout<<x->toString();
 }
+
+bool GameEngine::compliesWithA2Q2(){
+    if(MAP==nullptr || players == nullptr || deck==nullptr){
+        return false;
+    }
+    Player* owner;
+    bool invalid;
+    for(auto&& x:MAP->Territories){//Check if owners are all valid
+        invalid = true;
+        owner = x->getOwner();
+        for(int i =0; i < N_players; i++){
+            if(&players[i] == owner){
+                invalid = false;
+                break;
+            }
+        }
+        if(invalid){
+            cerr<<"Error!\nTerritory: "<<x->getName()<<" has an invalid owner!"<<endl;
+            return false;
+        }
+    }
+    for(int i = 0; i < N_players; i++){//Check if all players have correct lands
+        for(auto&& x:players[i].lands){
+            if(x->getOwner()!=&players[i]){
+                cerr<<"Error! Player: "<<players[i].getName()<<" points to territory: "<<x->getName()<<endl;
+                cerr<<"This territory is owned by someone else!\n";
+                return false;
+            }
+        }
+    }
+    int A;
+    switch(N_players){
+        case 2:
+            A = 40;
+            #ifdef printDebug
+            cout<<"A (number of troops) is: "<<A;
+            #endif
+            break;
+        case 3:
+            A = 35;
+            #ifdef printDebug
+            cout<<"A (number of troops) is: "<<A;
+            #endif
+            break;
+        case 4:
+            A = 30;
+            #ifdef printDebug
+            cout<<"A (number of troops) is: "<<A;
+            #endif
+            break;
+        case 5:
+            A = 25;
+            #ifdef printDebug
+            cout<<"A (number of troops) is: "<<A;
+            #endif
+            break;
+        case 6:
+            A = 20;
+            #ifdef printDebug
+            cout<<"A (number of troops) is: "<<A;
+            #endif
+            break;
+        default:
+            cerr<<"Error, invalid number of players.";
+            return false;
+    }
+
+    for(int i = 0; i < N_players; i++){
+        int troops = 0;
+        for(auto&& x:players[i].lands){
+            troops +=x->getTroops();
+        }
+        if(troops != A){
+            cerr<<"Player: "<<players[i].getName()<< " has the wrong number of armies!\n";
+            cerr<<"Player has "<<troops<<" troops, should have "<< A<<endl;
+            return false;
+        }
+    }
+    return true;
+}
