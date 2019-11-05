@@ -4,6 +4,7 @@
 #include <string>
 #include <math.h>
 #include <algorithm>
+#include <limits>
 
 //default constructor
 Player::Player() {
@@ -231,12 +232,24 @@ void Player::fortify() {
 			std::cout << "Enter the country number you would like to move your armies from or type -1 to end fortification"  << std::endl;
 			int country1;
 			cin >> country1;
+			while(std::cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
+				std::cout << "Please Enter a number: ";
+				std::cin >> country1;
+			}
 
 			if(country1 == -1) break;
 
 			std::cout << "Enter the country you would like to fortify or type -1 to end fortification" << std::endl;
 			int country2;
 			std::cin >> country2;
+			while(std::cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
+				std::cout << "Please Enter a number: ";
+				std::cin >> country2;
+			}
 			if(country2 == -1) break;
 
 			//validation on countries picked
@@ -254,7 +267,7 @@ void Player::fortify() {
 				continue;
 			} else if(!this->lands[country1 - 1]->isAdj(this->lands[country2 - 1])) {
 				std::cout << "please pick countries that are adjacent" << std::endl;
-                continue;
+				continue;
 			}
 
 			//loop to get number of troops that user wants to move
@@ -264,10 +277,18 @@ void Player::fortify() {
 
 				int troops;
 				cin >> troops;
+				while(std::cin.fail()) {
+				    std::cin.clear();
+				    std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
+				    std::cout << "Please Enter a number: ";
+				    std::cin >> troops;
+				}
 
 				if(troops > this->lands[country1 - 1]->getTroops() - 1) { //must leave at least 1 troop on the territory
 					std::cout << "Please pick a number less than "<< this->lands[country1 - 1]->getTroops() << std::endl;
 					continue;
+				} else if (troops < 1){
+					std::cout << "Please enter a valid number" << std::endl;
 				}else {
 					//increment troops on territory chosen
 					this->lands[country2 - 1]->incTroops(troops);
@@ -291,8 +312,10 @@ void Player::printAdjacentCountries(std::vector<Territory*> territories) {
 	std::cout << "Adjacent Countries: ";
 	for(std::vector<Territory>::size_type i = 0; i != territories.size(); i++) {
 		//only display countries owned by player
-		if(territories[i]->getOwner() != NULL && territories[i]->getOwner()->getName() == *this->name){
-			std::cout << territories[i]->getName() << " ";
+		if(territories[i]->getOwner() != NULL){
+			if(territories[i]->getOwner()->getName() == *this->name){
+				std::cout << territories[i]->getName() << " ";
+			}
 		}
 	}
 	std::cout << "\n\n";
@@ -352,8 +375,14 @@ void Player::placeArmies(int armies) {
 			int number;
 
 			cin >> number;
+			while(std::cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
+				std::cout << "Please Enter a number: ";
+				std::cin >> number;
+			}
 
-			if (number > count) {
+			if (number > count || number < 1) {
 				std::cout << "Please choose a valid country number from list" << std::endl;
 				number = -1;
 				continue;
@@ -364,8 +393,14 @@ void Player::placeArmies(int armies) {
 				std::cout << "Enter amount of armies you would like to place, max amount you can place is " << this->getArmies() << std::endl; //maybe allow user to back out if they change their mind
 				int armies;
 				std::cin >> armies;
+				while(std::cin.fail()) {
+					std::cin.clear();
+					std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
+					std::cout << "Please Enter a number: ";
+					std::cin >> armies;
+				}
 
-				if (armies > this->getArmies()) {
+				if (armies > this->getArmies() || armies < 1) {
 					std::cout << "You cannot place this many armies" << std::endl;
 					continue;
 				}
@@ -394,7 +429,7 @@ void Player::hasContinent(Map* map){
 				counter += 1;
 				if(counter == continents[i]->Territories.size())
 				{
-                    //check if continent is already owned by player
+					//check if continent is already owned by player
 					if (std::find(this->continents.begin(), this->continents.end(), continents[i]) != this->continents.end())
 					{
 						return;
