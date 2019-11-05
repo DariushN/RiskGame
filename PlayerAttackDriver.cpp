@@ -34,7 +34,8 @@ int main(int argc, char** argv) {
 	}
 
 
-	//player1 reinforces then attacks
+	//player1 and player2 reinforces then player1 attacks
 	player->reinforce(MAP);
+    player2->reinforce(MAP);
 	player->attack(MAP);
 }

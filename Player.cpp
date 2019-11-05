@@ -106,6 +106,39 @@ void Player::attack(Map* map) {
         // Determine how many dices user wants to roll after determining the max amount
         int maxAttackerDice = maxDiceToRoll(true, lands[countryInput-1]);
         int maxDefenseDice = maxDiceToRoll(false, attackedTerritory);
+        // If attacked territory is unoccupied, take it
+        if (maxDefenseDice==0){
+            cout<<"Attacker wins battle and wins territory"<<endl;
+            //Remove territory lost fromd defense player's owned lands
+            lands.push_back(attackedTerritory);
+            remove(attackedTerritory->getOwner()->lands.begin(),attackedTerritory->getOwner()->lands.end(),attackedTerritory);
+            attackedTerritory->setOwner(this);
+            //Move army from attacked territory to new defeated territory
+            while(1) {
+                std::cout << "How many troops would you like to move from " << this->lands[countryInput - 1]->getName()
+                          << " to " << this->lands.back()->getName() << std::endl;
+
+                int troops;
+                cin >> troops;
+
+                if(troops <0) { //must leave at least 1 troop on the territory
+                    std::cout << "Please pick a positive number"<<std::endl;
+                    continue;
+                }
+
+                if(troops > this->lands[countryInput - 1]->getTroops() - 1) { //must leave at least 1 troop on the territory
+                    std::cout << "Please pick a number less than "<< this->lands[countryInput - 1]->getTroops() << std::endl;
+                    continue;
+                }else {
+                    //increment troops on territory chosen
+                    this->lands.back()->incTroops(troops);
+                    lands[countryInput-1]->decTroops(troops);
+                    std::cout << "Fortified " << this->lands.back()->getName() << ", new total is " << this->lands.back()->getTroops() << std::endl;
+                    break;
+                }
+            }
+            continue;
+        }
         cout<<"How many dices would the attacker want to roll? (1,"<<maxAttackerDice<<")"<<endl;
         int attackerDiceNumber;
         cin>>attackerDiceNumber;
@@ -114,13 +147,18 @@ void Player::attack(Map* map) {
         cout<<"How many dices would the defense want to roll? (1,"<<maxDefenseDice<<")"<<endl;
         int defenseDiceNumber;
         cin>>defenseDiceNumber;
-        if(defenseDiceNumber>maxAttackerDice||defenseDiceNumber<1)
+        if(defenseDiceNumber>maxDefenseDice||defenseDiceNumber<1)
             continue;
         int attackerDiceResults[3];
         int defenseDiceResults[3];
         //Roll dices and compare the highest result to see who wins
         cout<<"Rolling dices"<<endl;
         while(true){
+            // Check if enough army to proceed to additional attack
+            if(lands[countryInput-1]->getTroops()<2){
+                cout<<"Not enough army on territory"<<endl;
+                break;
+            }
             dice->roll(attackerDiceNumber, attackerDiceResults);
             cout<<attackedTerritory->getOwner()->getName();
             attackedTerritory->getOwner()->dice->roll(defenseDiceNumber,defenseDiceResults);
@@ -153,6 +191,11 @@ void Player::attack(Map* map) {
 
                     int troops;
                     cin >> troops;
+
+                    if(troops <0) { //must leave at least 1 troop on the territory
+                        std::cout << "Please pick a positive number"<<std::endl;
+                        continue;
+                    }
 
                     if(troops > this->lands[countryInput - 1]->getTroops() - 1) { //must leave at least 1 troop on the territory
                         std::cout << "Please pick a number less than "<< this->lands[countryInput - 1]->getTroops() << std::endl;
