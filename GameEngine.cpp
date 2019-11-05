@@ -14,6 +14,7 @@
 #include "GameEngine.h"
 #include <Windows.h>
 #include <iostream>
+#include <limits>
 using std::cin;
 using std::cout;
 using std::string;
@@ -50,6 +51,12 @@ void GameEngine::Setup(){
     while(N_players < 2 || N_players > 6){
         cout<<"Enter number of players (2-6): ";
         cin>>N_players;
+        while(std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
+			std::cout << "Please Enter a number: ";
+			std::cin >> N_players;
+		}
     }
     
     int A;
@@ -128,6 +135,12 @@ void GameEngine::SelectMaps(){
         while(user_choice <0 || user_choice >n){
             cout<<"Enter index of desired map (0-" << to_string(n-1)<<") or "<<to_string(n) << " to enter your own: ";
             cin>>user_choice;
+            while(std::cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
+				std::cout << "Please Enter a number: ";
+				std::cin >> user_choice;
+			}
         }
         string filename;
         if(user_choice == n){
