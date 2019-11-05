@@ -23,21 +23,21 @@ using std::string;
 
 class GameEngine {
 public:
-    GameEngine();
-    GameEngine(const GameEngine& orig);
-    virtual ~GameEngine();
-    void SelectMaps();
-    void Setup();
-    void printTerritories();
-    bool compliesWithA2Q2();
-    void mainGameLoop();
-    void mainGameLoop(Map* MAP, std::vector<Player*> players);
+	GameEngine(); // Default constructor
+	GameEngine(const GameEngine& orig); // Copy constructor
+	virtual ~GameEngine(); // Destructor
+	void SelectMaps(); // Allow the user to select a map
+	void Setup(); // Set up players and territories
+	void printTerritories();
+	bool compliesWithA2Q2(); // Check if game was set up correctly
+	void mainGameLoop(); // Allow a player to make a move (reinforce, attack, fortify)
+	void mainGameLoop(Map* MAP, std::vector<Player*> players); // Overloaded game loop
 private:
-    Map* MAP;
-    int N_players;
-    Player* players;
-    Deck* deck;
-    vector<string> get_all_files_names_within_folder(string folder);
+	Map* MAP; // User-selected map
+	int N_players; // Number of players
+	Player* players; // Array of players
+	Deck* deck;
+	vector<string> get_all_files_names_within_folder(string folder); // Vector of file names within directory
     
     
 };
