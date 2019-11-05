@@ -24,7 +24,8 @@ using std::string;
 class GameEngine {
 public:
 	GameEngine(); // Default constructor
-	GameEngine(const GameEngine& orig); // Copy constructor
+	GameEngine(const GameEngine& orig);
+	GameEngine& operator=(const GameEngine &orig);
 	virtual ~GameEngine(); // Destructor
 	void SelectMaps(); // Allow the user to select a map
 	void Setup(); // Set up players and territories

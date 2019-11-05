@@ -34,8 +34,17 @@ GameEngine::GameEngine() {
 
 // Copy constructor
 GameEngine::GameEngine(const GameEngine& orig) {
+    players = new Player(*orig.players);
+    deck = new Deck(*orig.deck);
+    MAP = new Map(*orig.MAP);
 }
 
+GameEngine& GameEngine::operator=(const GameEngine &orig) {
+    players = orig.players;
+    deck = orig.deck;
+    MAP = orig.MAP;
+    return *this;
+}
 // Destructor
 GameEngine::~GameEngine() {
     if(MAP != nullptr) delete MAP;
