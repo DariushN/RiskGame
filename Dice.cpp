@@ -30,6 +30,19 @@ Dice::Dice(){
 	n[0] = 0;
 }
 
+Dice::Dice(const Dice& orig){
+    counts = new int(*counts);
+    percentages = new double(*percentages);
+    n = new int(*orig.n);
+}
+
+Dice& Dice::operator=(const Dice &orig) {
+    counts =orig.counts;
+    percentages = orig.percentages;
+    n = orig.n;
+    return *this;
+}
+
 
 Dice::~Dice(){
 	// Delete pointers

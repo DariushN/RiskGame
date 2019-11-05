@@ -15,6 +15,18 @@ Map::Map() {//Default contructor
 
 Map::Map(const Map& orig) {
     //Copy constructor
+    name = new string(*orig.name);
+    valid = new bool(*orig.valid);
+    for(auto&& x:orig.Territories){
+        Territories.push_back(new Territory(*x));
+    }
+}
+
+Map& Map::operator=(const Map &orig) {
+    name = orig.name;
+    valid = orig.valid;
+    Territories = orig.Territories;
+    return *this;
 }
 
 Map::~Map() {//Destructor
@@ -157,10 +169,20 @@ Continent::Continent() {//Default constructor
 
 Continent::Continent(const Continent& orig) {//Copy Constructor
     //std::cout<< "Continent copy constructor called"<<endl;
-    this->ID = orig.ID;
-    this->Territories = orig.Territories;
-    this->name = orig.name;
-    this->value = orig.value;
+    this->ID = new int(*orig.ID);
+    this->name = new string(*orig.name);
+    this->value = new int(*orig.value);
+    for(auto&& x:orig.Territories){
+        Territories.push_back(new Territory(*x));
+    }
+}
+
+Continent& Continent::operator=(const Continent &orig) {
+    ID = orig.ID;
+    name = orig.name;
+    value = orig.value;
+    Territories = orig.Territories;
+    return *this;
 }
 
 Continent::~Continent() {//Destructor
@@ -209,12 +231,24 @@ Territory::Territory() {
 
 Territory::Territory(const Territory& orig) {//Copy constructor
     neighbors = orig.neighbors;
+    for(auto&& x: orig.neighbors){
+        neighbors.push_back(new int(*x));
+    }
+    ID = new int(*orig.ID);
+    name = new string(*orig.name);
+    troops = new int(*orig.troops);
+    location = new Continent(*orig.location);
+    for(auto&& x: orig.adjacents){
+        adjacents.push_back(new Territory(*x));
+    }
+    owner = new Player(*orig.owner);
+}
+
+Territory& Territory::operator=(const Territory &orig) {
     ID = orig.ID;
     name = orig.name;
     troops = orig.troops;
-    location = orig.location;
-    adjacents = orig.adjacents;
-    owner = orig.owner;
+    return *this;
 }
 
 Territory::~Territory() {

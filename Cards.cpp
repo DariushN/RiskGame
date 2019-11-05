@@ -13,9 +13,20 @@ using namespace std;
 Deck::Deck(vector<string *> territories) {
     initializeDeck(territories);
 }
+
+Deck& Deck::operator=(const Deck &orig) {
+    Cards=orig.Cards;
+    return *this;
+}
 // Overloaded constructor (initialize out of territories)
 Deck::Deck(vector<Territory *> territories) {
     initializeDeck(territories);
+}
+
+Deck::Deck(const Deck& orig){
+    for(auto && x:orig.Cards){
+        Cards.push_back(new Card(*x));
+    }
 }
 
 // Initialize the deck to populate it with strings of territories
@@ -80,6 +91,16 @@ Card::Card() {
     type = new string("");
     territory = new string("");
 }
+
+Card& Card::operator=(const Card &orig) {
+    type = orig.type;
+    territory = orig.territory;
+    return *this;
+}
+Card::Card(const Card& orig){
+    type = new string(*orig.type);
+    territory = new string(*orig.territory);
+}
 //Getter of territory
 string Card::getTerritory() {
     return *territory;
@@ -104,6 +125,16 @@ Card::~Card() {
 
 Hand::Hand(){}; //Default constructor
 
+Hand& Hand::operator=(const Hand &orig) {
+    Cards=orig.Cards;
+    return *this;
+}
+
+Hand::Hand(const Hand& orig){
+    for(auto && x:orig.Cards){
+        Cards.push_back(new Card(*x));
+    }
+}
 //Destructor
 Hand::~Hand(){
     for(auto&& x:Cards)
