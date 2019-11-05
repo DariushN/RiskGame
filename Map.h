@@ -9,6 +9,7 @@ class Continent;
 class Map {
 public:
     Map();//Default Constructor
+    Map& operator=(const Map &orig);
     Map(const Map& orig);//Copy Constructor
     virtual ~Map();//Destructor
     std::vector <Territory*> Territories;//Territories in map
@@ -38,6 +39,7 @@ class Continent {
     
 public:
     Continent();//Constructor
+    Continent& operator=(const Continent &orig);
     Continent(const Continent& orig);//Copy Constructor
     virtual ~Continent();//Destructor
     vector<Territory*> Territories;//Territories in this continent
@@ -73,6 +75,7 @@ public:
     int getID();//Returns PIN
     void setID(int a);//Sets PIN
     Territory();//Constructor
+    Territory& operator=(const Territory &orig);
     Territory(const Territory& orig);//Copy Constructor
     virtual ~Territory();//Destructor
     std::string getName();//Returns name

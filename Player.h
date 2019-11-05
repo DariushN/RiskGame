@@ -15,6 +15,8 @@ class Hand;
 class Player {
 public:
     Player();//constructor
+    Player(const Player& orig);
+    Player& operator=(const Player &orig);
     virtual ~Player();//destructor
     int getId();//getter for id
     void setId(int a); //setter for id

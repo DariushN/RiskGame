@@ -15,6 +15,23 @@ Player::Player() {
 	hand = new Hand();
 }
 
+Player::Player(const Player &orig) {
+    name = new string(*orig.name);
+    id = new int(*orig.id);
+    dice = new Dice(*orig.dice);
+    armies = new int(*orig.armies);
+    hand = new Hand(*orig.hand);
+}
+
+Player& Player::operator=(const Player &orig) {
+    name = orig.name;
+    id = orig.id;
+    dice = orig.dice;
+    armies = orig.armies;
+    hand = orig.hand;
+    return *this;
+}
+
 std::string Player::getName(){
     return *name;
 }
