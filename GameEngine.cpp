@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /* 
  * File:   GameEngine.cpp
@@ -14,7 +9,6 @@
 #include "GameEngine.h"
 #include <Windows.h>
 #include <iostream>
-#include <limits>
 using std::cin;
 using std::cout;
 using std::string;
@@ -25,16 +19,18 @@ using std::to_string;
 
 #define printDebug
 
+// Default constructor
 GameEngine::GameEngine() {
     MAP = nullptr;
     players = nullptr;
     deck = nullptr;
 }    
 
+// Copy constructor
 GameEngine::GameEngine(const GameEngine& orig) {
-
 }
 
+// Destructor
 GameEngine::~GameEngine() {
     if(MAP != nullptr) delete MAP;
     if(players != nullptr) delete[] players;
@@ -42,24 +38,23 @@ GameEngine::~GameEngine() {
 }
 
 void GameEngine::Setup(){
-    if(MAP==nullptr || !(MAP->isValid())){//Check if map is initialized
+	
+    if(MAP==nullptr || !(MAP->isValid())){ // Check if map is initialized
         SelectMaps();
     }
+	
     string temp;
-    deck = new Deck(MAP->Territories);//initialize deck
+    deck = new Deck(MAP->Territories); // Initialize deck
     N_players = 7;
+	
+	// Ask user to enter the number of players and validate
     while(N_players < 2 || N_players > 6){
         cout<<"Enter number of players (2-6): ";
         cin>>N_players;
-        while(std::cin.fail()) {
-			std::cin.clear();
-			std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
-			std::cout << "Please Enter a number: ";
-			std::cin >> N_players;
-		}
     }
     
-    int A;
+    int A; // Number of armies
+	
     switch(N_players){
         case 2:
             A = 40;
@@ -95,7 +90,10 @@ void GameEngine::Setup(){
             cerr<<"Error, invalid number of players.";
             exit(1);
     }
-    players = new Player[N_players];
+	
+    players = new Player[N_players]; // Initialize array of players
+	
+	// Set each player's name, ID, and number of armies
     for(int i = 0; i < N_players; i++){
         players[i].setId(i);
         cout<<"What is player #"<<i<<"'s name? ";
@@ -103,12 +101,17 @@ void GameEngine::Setup(){
         players[i].setName(temp);
         players[i].setArmies(A);
     }
+	
     int n = 0;
+	
+	// In a round-robin manner, assign a territory to a player
     for(auto&& x:MAP->Territories){
         players[n%N_players].lands.push_back(x);
         x->setOwner(&players[n%N_players]);
         n++;
     }
+	
+	// In a round-robin manner, assign each player's armies
     for(int i = 0; i <N_players; i++){
         int nLands = players[i].lands.size();
         n = 0;
@@ -121,36 +124,42 @@ void GameEngine::Setup(){
 }
 
 void GameEngine::SelectMaps(){
+	
     vector<string> names = get_all_files_names_within_folder("Maps");
+	
     MapLoader ml;
-    bool keepUserTrapped = true;
+    bool keepUserTrapped = true; // Boolean to ensure valid user input
+	
     while(keepUserTrapped){
+		
         cout<<"The following maps are available:\n";
         int n = 0;
+		// Print directory of maps
         for(auto&& x:names){
             cout<<"\t"<<to_string(n++)<<"\t"<<x<<endl;
         }
 
+		// Prompt user to enter their choice
         int user_choice = n+1;
         while(user_choice <0 || user_choice >n){
             cout<<"Enter index of desired map (0-" << to_string(n-1)<<") or "<<to_string(n) << " to enter your own: ";
             cin>>user_choice;
-            while(std::cin.fail()) {
-				std::cin.clear();
-				std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
-				std::cout << "Please Enter a number: ";
-				std::cin >> user_choice;
-			}
         }
+		
         string filename;
+		
+		// Allow user to enter their own path if desired
         if(user_choice == n){
-            cout<<"please enter desired map file with path (if in other directory): "<<endl;
+            cout<<"Please enter desired map file with path (if in other directory): "<<endl;
             cin>>filename;
         }else{
             filename = "Maps/" + names.at(user_choice);
         }
-        MAP = ml.MapBuilder(filename);
+		
+        MAP = ml.MapBuilder(filename); // Load map
         keepUserTrapped = false;
+		
+		// Error message if chosen file was invalid
         if(keepUserTrapped){
             cout<<"Map file chosen was invalid, please choose another."<<endl;
         }
@@ -161,15 +170,15 @@ void GameEngine::SelectMaps(){
 
 
 vector<string> GameEngine::get_all_files_names_within_folder(string folder){
-    //Taken from https://stackoverflow.com/questions/612097/how-can-i-get-the-list-of-files-in-a-directory-using-c-or-c
-    //By herohuyongtao
+    // Taken from https://stackoverflow.com/questions/612097/how-can-i-get-the-list-of-files-in-a-directory-using-c-or-c
+    // By herohuyongtao
     vector<string> names;
     string search_path = folder + "/*.map";
     WIN32_FIND_DATA fd; 
     HANDLE hFind = ::FindFirstFile(search_path.c_str(), &fd); 
     if(hFind != INVALID_HANDLE_VALUE) { 
         do { 
-            // read all (real) files in current folder
+            // Read all (real) files in current folder
             // , delete '!' read other 2 default folder . and ..
             if(! (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ) {
                 names.push_back(fd.cFileName);
@@ -181,14 +190,17 @@ vector<string> GameEngine::get_all_files_names_within_folder(string folder){
 }
 
 void GameEngine::mainGameLoop(){
+	
 	bool isWinner = false;
 
+	// While the game is not won, allow each player to make a move
 	while(!isWinner){
 		for(int i = 0; i < this->N_players; i++){
+			// When all countries are owned by a player, the game is won
 			if(players[i].lands.size() == this->MAP->Territories.size()) {
 				isWinner = true;
 				std::cout << "The Winner is " << players[i].getName() << std::endl;
-				break;
+				break; // Exit out of game loop
 			}
 			std::cout <<"\n\n" << players[i].getName() << "'s turn" << std::endl;
 			players[i].reinforce(this->MAP);
@@ -197,6 +209,7 @@ void GameEngine::mainGameLoop(){
 		}
 	}
 }
+
 
 void GameEngine::mainGameLoop(Map* MAP, std::vector<Player*> players){
 	bool isWinner = false;
@@ -221,12 +234,15 @@ void GameEngine::printTerritories(){
 }
 
 bool GameEngine::compliesWithA2Q2(){
+	
     if(MAP==nullptr || players == nullptr || deck==nullptr){
         return false;
     }
+	
     Player* owner;
     bool invalid;
-    for(auto&& x:MAP->Territories){//Check if owners are all valid
+	
+    for(auto&& x:MAP->Territories){ // Check if owners are all valid
         invalid = true;
         owner = x->getOwner();
         for(int i =0; i < N_players; i++){
@@ -240,7 +256,8 @@ bool GameEngine::compliesWithA2Q2(){
             return false;
         }
     }
-    for(int i = 0; i < N_players; i++){//Check if all players have correct lands
+	
+    for(int i = 0; i < N_players; i++){ // Check if all players have correct lands
         for(auto&& x:players[i].lands){
             if(x->getOwner()!=&players[i]){
                 cerr<<"Error! Player: "<<players[i].getName()<<" points to territory: "<<x->getName()<<endl;
@@ -249,7 +266,8 @@ bool GameEngine::compliesWithA2Q2(){
             }
         }
     }
-    int A;
+	
+    int A; // Number of armies
     switch(N_players){
         case 2:
             A = 40;
@@ -285,7 +303,8 @@ bool GameEngine::compliesWithA2Q2(){
             cerr<<"Error, invalid number of players.";
             return false;
     }
-
+	
+	// Check if each player has the right amount of armies
     for(int i = 0; i < N_players; i++){
         int troops = 0;
         for(auto&& x:players[i].lands){
