@@ -8,8 +8,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
 	//get a map for demonstration purposes
-	MapLoader MAPload = MapLoader();
-	Map* MAP = MAPload.MapBuilder("Maps/risk.map");
+	Map* MAP = MapLoader::MapBuilder("Maps/risk.map");
 	std::cout << "Map name: " << MAP->getName() << endl;
 
 	//Initialize some player objects

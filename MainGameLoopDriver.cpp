@@ -9,8 +9,7 @@ using namespace std;
 
 int main(){
 	//get a map for demonstration purposes
-		MapLoader mapLoader;
-		Map* MAP = mapLoader.MapBuilder("Maps/risk.map");
+		Map* MAP =MapLoader::MapBuilder("Maps/risk.map");
 		std::cout<<"Map name: " << MAP->getName() << endl;
 
 
@@ -37,7 +36,7 @@ int main(){
 		gameEngine.mainGameLoop(MAP, players);
 
 
-		Map* MAP2 = mapLoader.MapBuilder("Maps/risk.map");
+		Map* MAP2 = MapLoader::MapBuilder("Maps/risk.map");
 		std::cout<<"\n\nMap name: " << MAP2->getName() << endl;
 
 

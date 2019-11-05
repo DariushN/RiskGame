@@ -134,7 +134,6 @@ void GameEngine::Setup(){
 
 void GameEngine::SelectMaps(){
     vector<string> names = get_all_files_names_within_folder("Maps");
-    MapLoader ml;
     bool keepUserTrapped = true; // Boolean to ensure valid user input
     while(keepUserTrapped){
         cout<<"The following maps are available:\n";
@@ -143,7 +142,6 @@ void GameEngine::SelectMaps(){
         for(auto&& x:names){
             cout<<"\t"<<to_string(n++)<<"\t"<<x<<endl;
         }
-
         int user_choice = n+1;
         while(user_choice <0 || user_choice >n){
             cout<<"Enter index of desired map (0-" << to_string(n-1)<<") or "<<to_string(n) << " to enter your own: ";
@@ -163,7 +161,7 @@ void GameEngine::SelectMaps(){
         }else{
             filename = "Maps/" + names.at(user_choice);
         }
-        MAP = ml.MapBuilder(filename);
+        MAP = MapLoader::MapBuilder(filename);
         keepUserTrapped = false;
         // Error message if chosen file was invalid
         if(keepUserTrapped){
