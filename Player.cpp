@@ -46,9 +46,12 @@ Dice* Player::getDice(){
 	return dice;
 }
 
+// Attack method
 void Player::attack(Map* map) {
 	std::cout << "Attacking" << std::endl;
+	// Loop the operation to enable repeat
 	while (true){
+	    // Ask if wants to attack, if yes proceed, otherwise break
 	    cout<< "Would you like to attack? (y/n)"<<endl;
         char input;
         cin >> input;
@@ -58,6 +61,7 @@ void Player::attack(Map* map) {
             std::cout << "please enter y or n to proceed" << std::endl;
             continue;
         }
+        // Choose which country to attack from, from a list
         cout<<"Choose which country to attack from"<<endl;
         for(int i = 1;i<=lands.size();i++){
             cout<<i<<": "<<lands[i-1]->getName()<< "     Armies: " << this->lands[i-1]->getTroops() << std::endl;
@@ -65,6 +69,7 @@ void Player::attack(Map* map) {
         cout<<"Which country would you like to attack from"<<endl;
         int countryInput;
         cin>>countryInput;
+        // If invalid index or not enough army, we repeat the attack operation
         if (countryInput>lands.size()||countryInput<1){
             cout<<"Invalid index"<<endl;
             continue;
@@ -76,34 +81,43 @@ void Player::attack(Map* map) {
         for(int i = 0;i<lands[countryInput-1]->adjacents.size();i++){
             cout<<i+1<<": "<<lands[countryInput-1]->adjacents[i]->getName()<< std::endl;
         }
+        // Choose which adjacent country to attack
         cout<<"Which country would you like to attack"<<endl;
         int countryAttackInput;
         cin>>countryAttackInput;
+        if (countryAttackInput>lands[countryInput-1]->adjacents.size()||countryAttackInput<1){
+            cout<<"Invalid index"<<endl;
+            continue;
+        }
         Territory* attackedTerritory;
+        // Retrieve attacked territory
         for(auto&& x: map->Territories){
             if (x->getName() == lands[countryInput-1]->adjacents[countryAttackInput-1]->getName()){
                 attackedTerritory = x;
                 break;
             }
         }
+        // If we attack our own country, we restart the opertation
         if(attackedTerritory->getOwner()->getName()==getName()){
             cout<<"Cannot attack your own territory"<<endl;
             continue;
         }
+        // Determine how many dices user wants to roll after determining the max amount
         int maxAttackerDice = maxDiceToRoll(true, lands[countryInput-1]);
         int maxDefenseDice = maxDiceToRoll(false, attackedTerritory);
         cout<<"How many dices would the attacker want to roll? (1,"<<maxAttackerDice<<")"<<endl;
         int attackerDiceNumber;
         cin>>attackerDiceNumber;
-        if(attackerDiceNumber>maxAttackerDice||attackerDiceNumber<0)
+        if(attackerDiceNumber>maxAttackerDice||attackerDiceNumber<1)
             continue;
         cout<<"How many dices would the defense want to roll? (1,"<<maxDefenseDice<<")"<<endl;
         int defenseDiceNumber;
         cin>>defenseDiceNumber;
-        if(defenseDiceNumber>maxAttackerDice||defenseDiceNumber<0)
+        if(defenseDiceNumber>maxAttackerDice||defenseDiceNumber<1)
             continue;
         int attackerDiceResults[3];
         int defenseDiceResults[3];
+        //Roll dices and compare the highest result to see who wins
         cout<<"Rolling dices"<<endl;
         while(true){
             dice->roll(attackerDiceNumber, attackerDiceResults);
@@ -124,19 +138,12 @@ void Player::attack(Map* map) {
                 cout<<"Attacker lost battle and can't attack anymore"<<endl;
                 continue;
             }
+            // If defense loses all defense, attacker gets territory
             if(attackedTerritory->getTroops()==0){
                 cout<<"Attacker wins battle and wins territory"<<endl;
                 //Remove territory lost fromd defense player's owned lands
                 lands.push_back(attackedTerritory);
                 remove(attackedTerritory->getOwner()->lands.begin(),attackedTerritory->getOwner()->lands.end(),attackedTerritory);
-                /*
-                for(int i=0;i<attackedTerritory->getOwner()->lands.size();i++){
-                    if(attackedTerritory->getOwner()->lands[i]->getName()==attackedTerritory->getName()){
-                        //attackedTerritory->getOwner()->lands.erase(lands.begin()+i);
-                        remove(attackedTerritory->getOwner()->lands.begin(),attackedTerritory->getOwner()->lands.end(),attackedTerritory);
-                        break;
-                    }
-                }*/
                 attackedTerritory->setOwner(this);
                 //Move army from attacked territory to new defeated territory
                 while(1) {
@@ -160,6 +167,7 @@ void Player::attack(Map* map) {
                 break;
 
             }
+            // Ask to repeat
             cout<<"Would you like to attack this country again?(y/n)"<<endl;
             char repeatAttackInput;
             cin >> repeatAttackInput;
@@ -246,7 +254,7 @@ void Player::fortify() {
 				continue;
 			} else if(!this->lands[country1 - 1]->isAdj(this->lands[country2 - 1])) {
 				std::cout << "please pick countries that are adjacent" << std::endl;
-				continue;
+                continue;
 			}
 
 			//loop to get number of troops that user wants to move
@@ -386,7 +394,7 @@ void Player::hasContinent(Map* map){
 				counter += 1;
 				if(counter == continents[i]->Territories.size())
 				{
-					//check if continent is already owned by player
+                    //check if continent is already owned by player
 					if (std::find(this->continents.begin(), this->continents.end(), continents[i]) != this->continents.end())
 					{
 						return;
