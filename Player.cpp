@@ -381,9 +381,7 @@ void Player::printAdjacentCountries(std::vector<Territory*> territories) {
 	std::cout << "\n\n";
 }
 
-void Player::reinforce(Map* map) {
-	std::cout << "Reinforcing" << std::endl;
-
+void Player::recuperateArmies(Map* map){
 	//check if user owns a continent
 	this->hasContinent(map);
 	int controlledContinents = 0;
@@ -410,9 +408,6 @@ void Player::reinforce(Map* map) {
 
 	int totalArmies = controlledCountries + controlledContinents + exchangeValue; //add armies from exchange()
 	this->setArmies(totalArmies);
-	this->placeArmies(totalArmies);
-
-	std::cout << "Done Reinforcing" << std::endl;
 }
 
 void Player::placeArmies(int armies) {
