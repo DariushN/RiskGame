@@ -227,6 +227,7 @@ Territory::Territory() {
     ID = new int(1);
     name = new string("");
     troops = new int(0);
+    owner = NULL;
 }
 
 Territory::Territory(const Territory& orig) {//Copy constructor
@@ -256,6 +257,7 @@ Territory::~Territory() {
     delete ID;
     delete troops;
     delete name;
+    delete owner;
     for(auto&& x:neighbors) delete x;
 }
 

@@ -12,14 +12,14 @@ public:
 	virtual ~PlayerStrategies() = 0;
 	virtual void reinforce(Map* map, Player* player) = 0;
 	//virtual void attack(Map* map) = 0;
-	//virtual void fortify() = 0;
+	virtual void fortify(Player* player) = 0;
 };
 
 class HumanPlayer : public PlayerStrategies {
 public:
 	void reinforce(Map* map, Player* player);
 	//void attack(Map* map);
-	//void fortify();
+	void fortify(Player* player);
 	~HumanPlayer(){
 		std::cout << "human player destructor \n";
 	}
@@ -29,7 +29,7 @@ class AggressiveComputer : public PlayerStrategies {
 public:
 	void reinforce(Map* map, Player* player);
 	//void attack(Map* map);
-	//void fortify();
+	void fortify(Player* player);
 	~AggressiveComputer(){
 		std::cout << "Aggressive Computer destructor \n";
 	}
@@ -38,7 +38,7 @@ public:
 class BenevolentComputer : public PlayerStrategies {
 	void reinforce(Map* map, Player* player);
 		//void attack(Map* map);
-		//void fortify();
+		void fortify(Player* player);
 		~BenevolentComputer(){
 			std::cout << "Benevolent Computer destructor \n";
 		}

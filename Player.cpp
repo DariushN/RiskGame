@@ -255,127 +255,16 @@ int Player::maxDiceToRoll(bool isAttacker, Territory *territory) {
     }
 }
 
-void Player::fortify() {
-	std::cout << "fortifying" << std::endl;
-	bool deciding = true;
-	bool fortifying = true;
-
-	while(deciding) {
-		int count = 1;
-		//print out all players territories and number of armies on each
-		for(std::vector<Territory>::size_type i = 0; i != this->lands.size(); i++) {
-			std::cout << count << ": " <<  this->lands[i]->getName() << "     Armies: " << this->lands[i]->getTroops() << std::endl;
-			count++;
-		}
-
-		std::cout << "would you like to fortify a position? y or n" << std::endl;
-		char input;
-		cin >> input;
-		if(input == 'n'){
-			break;
-		} else if(input != 'y') {
-			std::cout << "please enter y or n to proceed" << std::endl;
-			continue;
-		}
-		// player decides to fortify
-
-		//Print out all the territories and and their adjacent territories
-		count = 1;
-			for(std::vector<Territory>::size_type i = 0; i != this->lands.size(); i++) {
-				std::cout << count << ": " <<  this->lands[i]->getName() << "  Armies: " <<
-						this->lands[i]->getTroops() << std::endl;
-				this->printAdjacentCountries(this->lands[i]->adjacents);
-				count++;
-			}
-
-		while(fortifying) {
-			std::cout << "Enter the country number you would like to move your armies from or type -1 to end fortification"  << std::endl;
-			int country1;
-			cin >> country1;
-			while(std::cin.fail()) {
-				std::cin.clear();
-				std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
-				std::cout << "Please Enter a number: ";
-				std::cin >> country1;
-			}
-
-			if(country1 == -1) break;
-
-			std::cout << "Enter the country you would like to fortify or type -1 to end fortification" << std::endl;
-			int country2;
-			std::cin >> country2;
-			while(std::cin.fail()) {
-				std::cin.clear();
-				std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
-				std::cout << "Please Enter a number: ";
-				std::cin >> country2;
-			}
-			if(country2 == -1) break;
-
-			//validation on countries picked
-			if(country1 > count || country2 < 1) {
-				std::cout << "Please pick a valid starting country" << std::endl;
-				continue;
-			} else if(country2 > count || country2 < 1) {
-				std::cout << "Please pick a valid country to fortify" << std::endl;
-				continue;
-			} else if(country1 == country2) {
-				std::cout << "Please pick different countries" << std::endl;
-				continue;
-			} else if(this->lands[country1 - 1]->getTroops() <= 1) {
-				std::cout << "Starting country must have more than 1 army, please pick another country" << std::endl;
-				continue;
-			} else if(!this->lands[country1 - 1]->isAdj(this->lands[country2 - 1])) {
-				std::cout << "please pick countries that are adjacent" << std::endl;
-				continue;
-			}
-
-			//loop to get number of troops that user wants to move
-			while(1) {
-				std::cout << "how many troops would you like to move from " << this->lands[country1 - 1]->getName()
-						<< " to " << this->lands[country2 - 1]->getName() << std::endl;
-
-				int troops;
-				cin >> troops;
-				while(std::cin.fail()) {
-				    std::cin.clear();
-				    std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
-				    std::cout << "Please Enter a number: ";
-				    std::cin >> troops;
-				}
-
-				if(troops > this->lands[country1 - 1]->getTroops() - 1) { //must leave at least 1 troop on the territory
-					std::cout << "Please pick a number less than "<< this->lands[country1 - 1]->getTroops() << std::endl;
-					continue;
-				} else if (troops < 1){
-					std::cout << "Please enter a valid number" << std::endl;
-				}else {
-					//increment troops on territory chosen
-					this->lands[country2 - 1]->incTroops(troops);
-					//decrement troops on country where armies are traded
-					this->lands[country1 - 1]->decTroops(troops);
-
-					std::cout << "Fortified " << this->lands[country2 - 1]->getName() << ", new total is " << this->lands[country2 - 1]->getTroops() << std::endl;
-					break;
-				}
-			}
-			break;
-		}
-		break;
-	}
-
-	std::cout << "Fortification done" << std::endl;
-}
-
 void Player::printAdjacentCountries(std::vector<Territory*> territories) {
 	//prints adjacent territories for each territory in vector
 	std::cout << "Adjacent Countries: ";
 	for(std::vector<Territory>::size_type i = 0; i != territories.size(); i++) {
 		//only display countries owned by player
-		if(territories[i]->getOwner() != NULL){
-			if(territories[i]->getOwner()->getName() == *this->name){
-				std::cout << territories[i]->getName() << " ";
-			}
+		if(territories[i]->getOwner() == NULL){
+			continue;
+		}
+		if(territories[i]->getOwner()->getName() == *this->name){
+			std::cout << territories[i]->getName() << " ";
 		}
 	}
 	std::cout << "\n\n";

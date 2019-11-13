@@ -34,7 +34,9 @@ public:
 	}
 	void attack(Map* map);//attack method
 	int maxDiceToRoll(bool isAttacker, Territory* territory);
-	void fortify();//fortify method
+	void fortify(){
+		this->strategy->fortify(this);
+	}
 	int getArmies();//getter for armies
 	void recuperateArmies(Map* map);
 	void setArmies(int army);//setter for armies
