@@ -9,6 +9,8 @@ using namespace std;
 class Dice{
 	public:
 		Dice(); // Default constructor
+        Dice(const Dice& orig);
+        Dice& operator=(const Dice &orig);
 		~Dice(); // Destructor
 		void roll(int n, int* container); // Roll dice
 		void activate(int* return_values); // Initiate turn
