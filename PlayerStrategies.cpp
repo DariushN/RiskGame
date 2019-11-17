@@ -165,13 +165,8 @@ void HumanPlayer::attack(Map *map, Player *player) {
             cout << "Not enough army on territory" << endl;
             continue;
         }
-        int count = 1;
         for (int i = 0; i < player->lands[countryInput - 1]->adjacents.size(); i++) {
-        	//only display countries that player does not own
-        	if(player->lands[countryInput - 1]->adjacents[i]->getOwner()->getName() != player->getName()){
-                cout << count << ": " << player->lands[countryInput - 1]->adjacents[i]->getName() << std::endl;
-                count++;
-        	}
+        	cout << i + 1 << ": " << player->lands[countryInput - 1]->adjacents[i]->getName() << std::endl;
         }
         // Choose which adjacent country to attack
         cout << "Which country would you like to attack" << endl;
