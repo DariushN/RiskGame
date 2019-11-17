@@ -165,8 +165,13 @@ void HumanPlayer::attack(Map *map, Player *player) {
             cout << "Not enough army on territory" << endl;
             continue;
         }
+        int count = 1;
         for (int i = 0; i < player->lands[countryInput - 1]->adjacents.size(); i++) {
-            cout << i + 1 << ": " << player->lands[countryInput - 1]->adjacents[i]->getName() << std::endl;
+        	//only display countries that player does not own
+        	if(player->lands[countryInput - 1]->adjacents[i]->getOwner()->getName() != player->getName()){
+                cout << count << ": " << player->lands[countryInput - 1]->adjacents[i]->getName() << std::endl;
+                count++;
+        	}
         }
         // Choose which adjacent country to attack
         cout << "Which country would you like to attack" << endl;
@@ -199,6 +204,8 @@ void HumanPlayer::attack(Map *map, Player *player) {
             player->lands.push_back(attackedTerritory);
             remove(attackedTerritory->getOwner()->lands.begin(), attackedTerritory->getOwner()->lands.end(),
                    attackedTerritory);
+            //resize the array
+            attackedTerritory->getOwner()->lands.resize(attackedTerritory->getOwner()->lands.size() - 1);
             attackedTerritory->setOwner(player);
             //Move army from attacked territory to new defeated territory
             while (1) {
@@ -277,6 +284,8 @@ void HumanPlayer::attack(Map *map, Player *player) {
                 player->lands.push_back(attackedTerritory);
                 remove(attackedTerritory->getOwner()->lands.begin(), attackedTerritory->getOwner()->lands.end(),
                        attackedTerritory);
+                //resize the array
+                attackedTerritory->getOwner()->lands.resize(attackedTerritory->getOwner()->lands.size() - 1);
                 attackedTerritory->setOwner(player);
                 //Move army from attacked territory to new defeated territory
                 while (1) {
@@ -398,6 +407,8 @@ void AggressiveComputer::attack(Map *map, Player *player) {
             player->lands.push_back(attackedTerritory);
             remove(attackedTerritory->getOwner()->lands.begin(), attackedTerritory->getOwner()->lands.end(),
                    attackedTerritory);
+            //resize the array
+            attackedTerritory->getOwner()->lands.resize(attackedTerritory->getOwner()->lands.size() - 1);
             attackedTerritory->setOwner(player);
             //Move 1 army from attacked territory to new defeated territory
             attackedTerritory->setTroops(1);
@@ -441,6 +452,8 @@ void AggressiveComputer::attack(Map *map, Player *player) {
                 player->lands.push_back(attackedTerritory);
                 remove(attackedTerritory->getOwner()->lands.begin(), attackedTerritory->getOwner()->lands.end(),
                        attackedTerritory);
+                //resize the array
+                attackedTerritory->getOwner()->lands.resize(attackedTerritory->getOwner()->lands.size() - 1);
                 attackedTerritory->setOwner(player);
                 //Move 1 army from attacked territory to new defeated territory
                 attackedTerritory->setTroops(1);
@@ -546,14 +559,15 @@ void BenevolentComputer::fortify(Player *player) {
     //if there are no potential adjacent countries, then it moves to second smallest country
     //it then moves half the armies of the biggest adjacent country to the smallest country
     std::cout << "Benevolant Computer fortifying" << std::endl;
-    std::vector<Territory *> territories = player->lands;
     int count = 1;
-    for (std::vector<Territory>::size_type i = 0; i != territories.size(); i++) {
-        std::cout << count << ": " << territories[i]->getName() << "  Armies: " <<
-                  territories[i]->getTroops() << std::endl;
-        player->printAdjacentCountries(territories[i]->adjacents);
+    for (std::vector<Territory>::size_type i = 0; i < player->lands.size(); i++) {
+        std::cout << count << ": " << player->lands[i]->getName() << "  Armies: " <<
+                  player->lands[i]->getTroops() << std::endl;
+        player->printAdjacentCountries(player->lands[i]->adjacents);
         count++;
     }
+    std::vector<Territory*> territories;
+    territories = player->lands;
     //sort the players lands from min armies to max in new vector territories
     std::sort(territories.begin(), territories.end(), comparisonFunction);
 
@@ -593,7 +607,7 @@ void BenevolentComputer::fortify(Player *player) {
     //increment troops on territory chosen
     territories[minIndex]->incTroops(transferTroops);
     //decrement troops on max country
-    territories[maxIndex]->adjacents[maxIndex]->setTroops(
+    territories[minIndex]->adjacents[maxIndex]->setTroops(
             territories[minIndex]->adjacents[maxIndex]->getTroops() - transferTroops);
 
     std::cout << "Benevolant Computer Fortified " << territories[minIndex]->getName() << ", new total is "
