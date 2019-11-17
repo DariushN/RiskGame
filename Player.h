@@ -32,8 +32,9 @@ public:
 	void reinforce(Map* map){
 		this->strategy->reinforce(map, this);
 	}
-	void attack(Map* map);//attack method
-	int maxDiceToRoll(bool isAttacker, Territory* territory);
+	void attack(Map* map){
+	    this->strategy->attack(map, this);
+	};//attack method
 	void fortify(){
 		this->strategy->fortify(this);
 	}
@@ -56,6 +57,7 @@ private:
 	Dice* dice; //dice rolling facility object
 	Hand* hand; // hand of risk cards
 };
+
 
 #endif /* PLAYER_H */
 
