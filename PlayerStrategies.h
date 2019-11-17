@@ -2,6 +2,7 @@
 #include "Player.h"
 #include <cstdlib>
 #include <iostream>
+
 class Player;
 
 #ifndef SRC_PLAYERSTRATEGIES_H_
