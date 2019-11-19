@@ -58,7 +58,6 @@ int main(int argc, char** argv) {
 	std::vector<Player*> players;
 	players.push_back(player);
 	players.push_back(player2);
-	int size = players.size();
 
 	// Create observers
 	GameObserver GO = GameObserver(players[0]);

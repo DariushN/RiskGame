@@ -24,7 +24,6 @@ using std::cerr;
 using std::vector;
 using std::to_string;
 
-#define printDebug
 
 // Default constructor
 GameEngine::GameEngine() {
@@ -92,33 +91,18 @@ void GameEngine::Setup(){
 	switch(N_players){
 	case 2:
 		A = 40;
-#ifdef printDebug
-		cout<<"A (number of troops) is: "<<A;
-#endif
 		break;
 	case 3:
 		A = 35;
-#ifdef printDebug
-		cout<<"A (number of troops) is: "<<A;
-#endif
 		break;
 	case 4:
 		A = 30;
-#ifdef printDebug
-		cout<<"A (number of troops) is: "<<A;
-#endif
 		break;
 	case 5:
 		A = 25;
-#ifdef printDebug
-		cout<<"A (number of troops) is: "<<A;
-#endif
 		break;
 	case 6:
 		A = 20;
-#ifdef printDebug
-		cout<<"A (number of troops) is: "<<A;
-#endif
 		break;
 	default:
 		cerr<<"Error, invalid number of players.";
@@ -223,21 +207,27 @@ vector<string> GameEngine::get_all_files_names_within_folder(string folder){
 void GameEngine::mainGameLoop(){
 	bool isWinner = false;
 	int a;
+	// While the game is not won, allow each player to make a move
 	while(!isWinner){
+		// When all countries are owned by a player, the game is won
 		for(int i = 0; i < this->N_players; i++){
-			turn = &players[i];
+			turn = &players[i]; // Set turn
+
+			// Determine if the player has won
 			if(players[i].lands.size() == this->MAP->Territories.size()) {
-				Notify();
+				Notify(); // Display final stats and a celebratory message
 				isWinner = true;
 				break;
 			}
-			else if(players[i].lands.size() == 0){
+			else if(players[i].lands.size() == 0){ // If the player lost, print a message and display final stats
 				cout << "\n\t---" << players[i].getName() << " has no more lands and is out of the game!---" << endl;
 				Notify();
 			}
+
 			std::cout <<"\n\n" << players[i].getName() << "'s turn" << std::endl;
-			Notify();
-			this->setPhase(" Reinforcement");
+			Notify(); // Display stats
+
+			this->setPhase(" Reinforcement"); // Set phase
 			players[i].reinforce(this->MAP);
 
 			this->setPhase(" Attack");
@@ -249,25 +239,35 @@ void GameEngine::mainGameLoop(){
 			// For brevity's sake (demonstration purposes)
 			cout << "Enter -1 to end the game, 0 to declare the first player the winner, or any other number to continue: ";
 			cin >> a;
-			if (a == -1) {
+
+			if (a == -1) { // End the game
 				cout << "\nThanks for playing!" << endl;
 				return;
 			}
-			else if(a == 0){
+			else if(a == 0){ // Declare the first player as the winner and exit game
+
 				int s = players[1].lands.size();
 				cout << "\n\t---" << players[0].getName() << " is conquering " << players[1].getName() << "'s territories!---" << endl;
-				// Erase all of player 2's territories
+
+				// Give all of player 2's territories to player 1
 				for(int i = 0; i < s; i++){
 					Territory* a = players[1].lands.back();
 					players[1].lands.pop_back();
 					players[0].lands.push_back(a);
-					// Show that the view changes when a country is conquered
+
 					cout << "\n\t---" << a->getName() << " has been conquered---" << endl;
+
+					// Display that player 2 has been eliminated
+					if(players[1].lands.size() == 0){
+						cout << "\n\t---" << players[1].getName() << " has been eliminated---" << endl;
+					}
+
+					// Update the view to reflect the changes in territory
 					Notify();
 				}
 				exit(1);
 			}
-			else{
+			else{ // Otherwise continue the game
 				continue;
 			}
 

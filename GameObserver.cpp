@@ -76,26 +76,28 @@ template<typename T> void StatsObserver::printElement(T t, const int& width){
 	// Taken from https://stackoverflow.com/questions/14765155/how-can-i-easily-format-my-data-table-in-c
 	// By user Cyril Leroux
 	const char separator = ' ';
-    cout << left << setw(width) << setfill(separator) << t;
+	cout << left << setw(width) << setfill(separator) << t;
 }
 
 
 void StatsObserver::Update() {
 
-    double numCountries = subject->getMap()->Territories.size(); // Total number of countries on the map
-    double numControlled = (subject->getPlayers()+0)->lands.size();
-    double percentage;
-    cout << fixed;
-    cout << setprecision(2); // Set decimal places
+	double numCountries = subject->getMap()->Territories.size(); // Total number of countries on the map
+	double numControlled = (subject->getPlayers()+0)->lands.size();
+	double percentage;
+	cout << fixed;
+	cout << setprecision(2); // Set decimal places
 
+	// Print celebratory message
 	if(numControlled == numCountries){
 		cout << "\n\t****************************************" << endl;
-		cout << "\t---Congratulations! The Winner is " << (subject->getPlayers()+0)->getName() << "---" << endl; // Display winner
-		cout << "\t---Thanks for playing!---" << endl;
+		cout << "\tCongratulations! The Winner is " << (subject->getPlayers()+0)->getName() << endl; // Display winner
+		cout << "\tThanks for playing!" << endl;
 		cout << "\t****************************************\n" << endl;
 	}
 
-    cout << "---Percentage of the world controlled by each player---\n" << endl;
+	// Print table
+	cout << "---Percentage of the world controlled by each player---\n" << endl;
 	printElement("|   Player", 16);
 	printElement("|",6);
 	printElement("% of world  |", 20);
@@ -126,7 +128,7 @@ void StatsObserver::Update() {
 
 }
 
-//subject stuff
+// Subject class
 
 Subject::Subject() {
 	observers = new list<Observer*>;

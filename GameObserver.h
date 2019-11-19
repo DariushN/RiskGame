@@ -15,35 +15,35 @@ protected:
 // GameObserver class (part 2)
 class GameObserver : public Observer {
 
-	public:
-		GameObserver(); // Default constructor
-		GameObserver(const GameObserver& GO); // Copy constructor
-		GameObserver(Player* p); // Parametrized constructor taking a Player object
-		GameObserver& operator = (const GameObserver &g); // Assignment operator overloading
-		~GameObserver(); // Destructor
-		void Update(); // Update method
-	private:
-		Player* subject; // Player subject
+public:
+	GameObserver(); // Default constructor
+	GameObserver(const GameObserver& GO); // Copy constructor
+	GameObserver(Player* p); // Parametrized constructor taking a Player object
+	GameObserver& operator = (const GameObserver &g); // Assignment operator overloading
+	~GameObserver(); // Destructor
+	void Update(); // Update method
+private:
+	Player* subject; // Player subject
 
 };
 
 // StatsObserver class (part 3)
 class StatsObserver : public Observer{
 
-	public:
-		StatsObserver(); // Default constructor
-		StatsObserver(const StatsObserver& SO); // Copy constructor
-		StatsObserver(GameEngine* p); // Parametrized constructor taking a GameEngine object
-		StatsObserver& operator = (const StatsObserver &s); // Assignment operator overloading
-		~StatsObserver(); // Destructor
-		void Update(); // Update method
-		template<typename T> void printElement(T t, const int& width); // Helper method to print a table
-	private:
-		GameEngine* subject; // GameEngine subject
+public:
+	StatsObserver(); // Default constructor
+	StatsObserver(const StatsObserver& SO); // Copy constructor
+	StatsObserver(GameEngine* p); // Parametrized constructor taking a GameEngine object
+	StatsObserver& operator = (const StatsObserver &s); // Assignment operator overloading
+	~StatsObserver(); // Destructor
+	void Update(); // Update method
+	template<typename T> void printElement(T t, const int& width); // Helper method to print a table
+private:
+	GameEngine* subject; // GameEngine subject
 
 };
 
-#pragma once
+// Subject class
 #include <list>
 using namespace std;
 
