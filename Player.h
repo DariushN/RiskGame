@@ -7,14 +7,17 @@
 #include "Map.h"
 #include "Cards.h"
 #include "PlayerStrategies.h"
+#include "Subject.h"
+
 class Territory;
 class Continent;
 class Map;
 class Hand;
 class PlayerStrategies;
+class Subject;
 
 
-class Player {
+class Player : public Subject{
 private:
 	PlayerStrategies *strategy;
 public:
@@ -30,14 +33,20 @@ public:
     std::vector <Continent*> continents; //vector of continents that a player occupies
     void hasContinent(Map* map);//method to check if owns a continent
 	void reinforce(Map* map){
+		setPhase(" Reinforcement");
+		Notify();
 		this->strategy->reinforce(map, this);
 	}
-	void attack(Map* map){
-	    this->strategy->attack(map, this);
-	};//attack method
 	void fortify(){
+		setPhase(" Fortification");
+		Notify();
 		this->strategy->fortify(this);
 	}
+	void attack(Map* map){
+		setPhase(" Attack");
+		Notify();
+		this->strategy->attack(map, this);
+	}//attack method
 	int getArmies();//getter for armies
 	void recuperateArmies(Map* map);
 	void setArmies(int army);//setter for armies
@@ -47,6 +56,8 @@ public:
 	void setHand(Hand hand);
 	Dice* getDice();
 	void setDice(Dice dice);
+	string getPhase();
+	void setPhase(string s);
 	void setStrategy(PlayerStrategies *newStrategy){
 		this->strategy = newStrategy;
 	}
@@ -56,8 +67,9 @@ private:
     int* armies; //number of armies that a player has during his turn
 	Dice* dice; //dice rolling facility object
 	Hand* hand; // hand of risk cards
-};
+	std::string* phase; // current phase the player is in
 
+};
 
 #endif /* PLAYER_H */
 

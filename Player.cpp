@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <limits>
 
+
 //default constructor
 Player::Player() {
 	name = new std::string("");
@@ -13,6 +14,8 @@ Player::Player() {
 	dice = new Dice();
 	armies = new int(0);
 	hand = new Hand();
+	phase = new std::string("");
+	strategy = new HumanPlayer();
 }
 
 Player::Player(const Player &orig) {
@@ -21,6 +24,8 @@ Player::Player(const Player &orig) {
     dice = new Dice(*orig.dice);
     armies = new int(*orig.armies);
     hand = new Hand(*orig.hand);
+	phase = new std::string(*orig.phase);
+	strategy = new HumanPlayer();
 }
 
 Player& Player::operator=(const Player &orig) {
@@ -29,7 +34,16 @@ Player& Player::operator=(const Player &orig) {
     dice = orig.dice;
     armies = orig.armies;
     hand = orig.hand;
+	phase = orig.phase;
     return *this;
+}
+
+std::string Player::getPhase() {
+	return *phase;
+}
+
+void Player::setPhase(std::string p) {
+	*phase = p;
 }
 
 std::string Player::getName(){
@@ -64,6 +78,7 @@ Dice* Player::getDice(){
 	return dice;
 }
 
+
 void Player::printAdjacentCountries(std::vector<Territory*> territories) {
 	//prints adjacent territories for each territory in vector
 	std::cout << "Adjacent Countries: ";
@@ -80,6 +95,7 @@ void Player::printAdjacentCountries(std::vector<Territory*> territories) {
 }
 
 void Player::recuperateArmies(Map* map){
+	cout << "\t---Recuperating armies---" << endl;
 	//check if user owns a continent
 	this->hasContinent(map);
 	int controlledContinents = 0;
@@ -102,13 +118,14 @@ void Player::recuperateArmies(Map* map){
 	std::cout << "Number of armies from Controlled Countries: "<< controlledCountries << std::endl;
 
 	int exchangeValue = this->hand->exchange(this->lands);
-	std::cout << "Number of armies from Exchanged Cards: " << exchangeValue << std::endl;
+	std::cout << "Number of armies from Exchanged Cards: " << exchangeValue << endl;
 
 	int totalArmies = controlledCountries + controlledContinents + exchangeValue; //add armies from exchange()
 	this->setArmies(totalArmies);
 }
 
 void Player::placeArmies(int armies) {
+	cout << "\n\t---Placing armies---" << endl;
 	bool decidingCountry = true;
 	bool placingArmy = true;
 	if(this->lands.size() > 0) {
@@ -157,9 +174,9 @@ void Player::placeArmies(int armies) {
 					std::cout << "You cannot place this many armies" << std::endl;
 					continue;
 				}
-				//incremment troops and setArmies for player
+				//increment troops and setArmies for player
 				this->lands[number - 1]->incTroops(armies);
-				std::cout << "new total on " << this->lands[number - 1]->getName() << " is " << this->lands[number - 1]->getTroops() << std::endl;
+				std::cout << "\t---New total on " << this->lands[number - 1]->getName() << ": " << this->lands[number - 1]->getTroops() << "---" << std::endl;
 				int totalArmies = this->getArmies();
 				this->setArmies(totalArmies - armies);
 				break;
@@ -201,5 +218,7 @@ Player::~Player() {
 	delete dice;
 	delete armies;
 	delete hand;
+	delete strategy;
+	delete phase;
 }
 

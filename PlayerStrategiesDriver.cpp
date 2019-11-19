@@ -12,7 +12,8 @@ using namespace std;
 
 int main(int argc, char** argv) {
 	//get a map for demonstration purposes
-	Map* MAP = MapLoader::MapBuilder("Maps/risk.map");
+	MapLoader* mapLoader = new MapLoader();
+	Map* MAP = mapLoader->MapBuilder("Maps/risk.map");
 	std::cout<<"Map name: " << MAP->getName() << endl;
 
 

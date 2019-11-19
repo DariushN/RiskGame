@@ -18,19 +18,44 @@
 #include "Dice.h"
 #include "Cards.h"
 #include "Player.h"
+#include "Subject.h"
 using std::vector;
 using std::string;
 
-class GameEngine {
+class Subject;
+
+class GameEngine : public Subject{
 public:
 	GameEngine(); // Default constructor
 	GameEngine(const GameEngine& orig);
-	GameEngine& operator=(const GameEngine &orig);
+	GameEngine(Map* MAP, Player* players, int n);
+	GameEngine& operator=(const GameEngine& orig);
 	virtual ~GameEngine(); // Destructor
 	void SelectMaps(); // Allow the user to select a map
 	void Setup(); // Set up players and territories
 	void printTerritories();
-	bool compliesWithA2Q2(); // Check if game was set up correctly
+	Player* getPlayers() {
+		return players;
+	}
+	int getNumPlayers() {
+		return N_players;
+	}
+	Map* getMap() {
+		return MAP;
+	}
+	Player* getTurn(){
+		return turn;
+	}
+	void setTurn(Player p){
+		turn = &p;
+	}
+	string getPhase() {
+		return *phase;
+	}
+
+	void setPhase(std::string p) {
+		*phase = p;
+	}
 	void mainGameLoop(); // Allow a player to make a move (reinforce, attack, fortify)
 	void mainGameLoop(Map* MAP, std::vector<Player*> players); // Overloaded game loop
 private:
@@ -38,8 +63,9 @@ private:
 	int N_players; // Number of players
 	Player* players; // Array of players
 	Deck* deck;
+	Player* turn;
 	vector<string> get_all_files_names_within_folder(string folder); // Vector of file names within directory
-    
+    string* phase;
     
 };
 

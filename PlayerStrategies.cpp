@@ -6,165 +6,163 @@
 #include <limits>
 #include <vector>
 
-void HumanPlayer::reinforce(Map *map, Player *player) {
-    std::cout << "Player Reinforcing" << std::endl;
-    player->recuperateArmies(map);
+void HumanPlayer::reinforce(Map* map, Player* player){
 
-    player->placeArmies(player->getArmies());
+	player->recuperateArmies(map);
 
-    std::cout << "Player Done Reinforcing" << std::endl;
+	player->placeArmies(player->getArmies());
+
+	std::cout << "!! Player Done Reinforcing !!" << std::endl;
 }
 
-void HumanPlayer::fortify(Player *player) {
-    std::cout << "Human player fortifying" << std::endl;
-    bool deciding = true;
-    bool fortifying = true;
+void HumanPlayer::fortify(Player* player){
 
-    while (deciding) {
-        int count = 1;
-        //print out all players territories and number of armies on each
-        for (std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
-            std::cout << count << ": " << player->lands[i]->getName() << "     Armies: "
-                      << player->lands[i]->getTroops() << std::endl;
-            count++;
-        }
+	bool deciding = true;
+	bool fortifying = true;
 
-        std::cout << "would you like to fortify a position? y or n" << std::endl;
-        char input;
-        cin >> input;
-        if (input == 'n') {
-            break;
-        } else if (input != 'y') {
-            std::cout << "please enter y or n to proceed" << std::endl;
-            continue;
-        }
-        // player decides to fortify
+	while(deciding) {
+		int count = 1;
+		//print out all players territories and number of armies on each
+		for(std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
+			std::cout << count << ": " <<  player->lands[i]->getName() << "     Armies: " << player->lands[i]->getTroops() << std::endl;
+			count++;
+		}
 
-        //Print out all the territories and and their adjacent territories
-        count = 1;
-        for (std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
-            std::cout << count << ": " << player->lands[i]->getName() << "  Armies: " <<
-                      player->lands[i]->getTroops() << std::endl;
-            player->printAdjacentCountries(player->lands[i]->adjacents);
-            count++;
-        }
+		std::cout << "Would you like to fortify a position? y or n" << std::endl;
+		char input;
+		cin >> input;
+		if(input == 'n'){
+			break;
+		} else if(input != 'y') {
+			std::cout << "Please enter y or n to proceed" << std::endl;
+			continue;
+		}
 
-        while (fortifying) {
-            std::cout
-                    << "Enter the country number you would like to move your armies from or type -1 to end fortification"
-                    << std::endl;
-            int country1;
-            cin >> country1;
-            while (std::cin.fail()) {
-                std::cin.clear();
-                std::cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                std::cout << "Please Enter a number: ";
-                std::cin >> country1;
-            }
+		// Player decides to fortify
 
-            if (country1 == -1) break;
+		//Print out all the territories and and their adjacent territories
+		count = 1;
+		cout << "\n\t---Your Available Territories--"<<endl;
+		for(std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
+			std::cout << count << ": " <<  player->lands[i]->getName() << "  Armies: " <<
+					player->lands[i]->getTroops() << std::endl;
+			player->printAdjacentCountries(player->lands[i]->adjacents);
+			count++;
+		}
 
-            std::cout << "Enter the country you would like to fortify or type -1 to end fortification" << std::endl;
-            int country2;
-            std::cin >> country2;
-            while (std::cin.fail()) {
-                std::cin.clear();
-                std::cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                std::cout << "Please Enter a number: ";
-                std::cin >> country2;
-            }
-            if (country2 == -1) break;
+		while(fortifying) {
+			std::cout << "Enter the country number you would like to move your armies from or type -1 to end fortification"  << std::endl;
+			int country1;
+			cin >> country1;
+			while(std::cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
+				std::cout << "Please Enter a number: ";
+				std::cin >> country1;
+			}
 
-            //validation on countries picked
-            if (country1 > count || country2 < 1) {
-                std::cout << "Please pick a valid starting country" << std::endl;
-                continue;
-            } else if (country2 > count || country2 < 1) {
-                std::cout << "Please pick a valid country to fortify" << std::endl;
-                continue;
-            } else if (country1 == country2) {
-                std::cout << "Please pick different countries" << std::endl;
-                continue;
-            } else if (player->lands[country1 - 1]->getTroops() <= 1) {
-                std::cout << "Starting country must have more than 1 army, please pick another country" << std::endl;
-                continue;
-            } else if (!player->lands[country1 - 1]->isAdj(player->lands[country2 - 1])) {
-                std::cout << "please pick countries that are adjacent" << std::endl;
-                continue;
-            }
+			if(country1 == -1) break;
 
-            //loop to get number of troops that user wants to move
-            while (1) {
-                std::cout << "how many troops would you like to move from " << player->lands[country1 - 1]->getName()
-                          << " to " << player->lands[country2 - 1]->getName() << std::endl;
+			std::cout << "Enter the country you would like to fortify or type -1 to end fortification" << std::endl;
+			int country2;
+			std::cin >> country2;
+			while(std::cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
+				std::cout << "Please Enter a number: ";
+				std::cin >> country2;
+			}
+			if(country2 == -1) break;
 
-                int troops;
-                cin >> troops;
-                while (std::cin.fail()) {
-                    std::cin.clear();
-                    std::cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    std::cout << "Please Enter a number: ";
-                    std::cin >> troops;
-                }
+			//validation on countries picked
+			if(country1 > count || country2 < 1) {
+				std::cout << "Please pick a valid starting country" << std::endl;
+				continue;
+			} else if(country2 > count || country2 < 1) {
+				std::cout << "Please pick a valid country to fortify" << std::endl;
+				continue;
+			} else if(country1 == country2) {
+				std::cout << "Please pick different countries" << std::endl;
+				continue;
+			} else if(player->lands[country1 - 1]->getTroops() <= 1) {
+				std::cout << "Starting country must have more than 1 army, please pick another country" << std::endl;
+				continue;
+			} else if(!player->lands[country1 - 1]->isAdj(player->lands[country2 - 1])) {
+				std::cout << "Please pick countries that are adjacent" << std::endl;
+				continue;
+			}
 
-                if (troops >
-                    player->lands[country1 - 1]->getTroops() - 1) { //must leave at least 1 troop on the territory
-                    std::cout << "Please pick a number less than " << player->lands[country1 - 1]->getTroops()
-                              << std::endl;
-                    continue;
-                } else if (troops < 1) {
-                    std::cout << "Please enter a valid number" << std::endl;
-                } else {
-                    //increment troops on territory chosen
-                    player->lands[country2 - 1]->incTroops(troops);
-                    //decrement troops on country where armies are traded
-                    player->lands[country1 - 1]->decTroops(troops);
+			//loop to get number of troops that user wants to move
+			while(1) {
+				std::cout << "How many troops would you like to move from " << player->lands[country1 - 1]->getName()
+						<< " to " << player->lands[country2 - 1]->getName() << std::endl;
 
-                    std::cout << "Fortified " << player->lands[country2 - 1]->getName() << ", new total is "
-                              << player->lands[country2 - 1]->getTroops() << std::endl;
-                    break;
-                }
-            }
-            break;
-        }
-        break;
-    }
+				int troops;
+				cin >> troops;
+				while(std::cin.fail()) {
+					std::cin.clear();
+					std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
+					std::cout << "Please Enter a number: ";
+					std::cin >> troops;
+				}
 
-    std::cout << "Fortification done" << std::endl;
+				if(troops > player->lands[country1 - 1]->getTroops() - 1) { //must leave at least 1 troop on the territory
+					std::cout << "Please pick a number less than "<< player->lands[country1 - 1]->getTroops() << std::endl;
+					continue;
+				} else if (troops < 1){
+					std::cout << "Please enter a valid number" << std::endl;
+				}else {
+					//increment troops on territory chosen
+					player->lands[country2 - 1]->incTroops(troops);
+					//decrement troops on country where armies are traded
+					player->lands[country1 - 1]->decTroops(troops);
+
+					std::cout << "\t---Added armies to " << player->lands[country2 - 1]->getName() << "---" << endl;
+					cout<< "\t---The new total is " << player->lands[country2 - 1]->getTroops() << "---" << endl;
+					break;
+				}
+			}
+			break;
+		}
+		break;
+	}
+
+	std::cout << "\n!! Player Done Fortifying !!" << std::endl;
 }
 
 void HumanPlayer::attack(Map *map, Player *player) {
-    std::cout << "Attacking" << std::endl;
+
+
     // Loop the operation to enable repeat
     while (true) {
         // Ask if wants to attack, if yes proceed, otherwise break
-        cout << "Would you like to attack? (y/n)" << endl;
-        char input;
-        cin >> input;
-        if (input == 'n') {
-            return;
-        } else if (input != 'y') {
-            std::cout << "please enter y or n to proceed" << std::endl;
-            continue;
-        }
-        // Choose which country to attack from, from a list
-        cout << "Choose which country to attack from" << endl;
-        for (int i = 1; i <= player->lands.size(); i++) {
-            cout << i << ": " << player->lands[i - 1]->getName() << "     Armies: " << player->lands[i - 1]->getTroops()
-                 << std::endl;
-        }
-        cout << "Which country would you like to attack from" << endl;
-        int countryInput;
-        cin >> countryInput;
-        // If invalid index or not enough army, we repeat the attack operation
-        if (countryInput > player->lands.size() || countryInput < 1) {
-            cout << "Invalid index" << endl;
-            continue;
-        }
-        if (player->lands[countryInput - 1]->getTroops() < 2) {
-            cout << "Not enough army on territory" << endl;
-            continue;
-        }
+    	cout << "Would you like to attack? (y/n)" << endl;
+    	        char input;
+    	        cin >> input;
+    	        if (input == 'n') {
+    	            return;
+    	        } else if (input != 'y') {
+    	            std::cout << "please enter y or n to proceed" << std::endl;
+    	            continue;
+    	        }
+    	        // Choose which country to attack from, from a list
+    	        cout << "Choose which country to attack from" << endl;
+    	        for (int i = 1; i <= player->lands.size(); i++) {
+    	            cout << i << ": " << player->lands[i - 1]->getName() << "     Armies: " << player->lands[i - 1]->getTroops()
+    	                 << std::endl;
+    	        }
+    	        cout << "Which country would you like to attack from" << endl;
+    	        int countryInput;
+    	        cin >> countryInput;
+    	        // If invalid index or not enough army, we repeat the attack operation
+    	        if (countryInput > player->lands.size() || countryInput < 1) {
+    	            cout << "Invalid index" << endl;
+    	            continue;
+    	        }
+    	        if (player->lands[countryInput - 1]->getTroops() < 2) {
+    	            cout << "Not enough army on territory" << endl;
+    	            continue;
+    	        }
         for (int i = 0; i < player->lands[countryInput - 1]->adjacents.size(); i++) {
         	cout << i + 1 << ": " << player->lands[countryInput - 1]->adjacents[i]->getName() << std::endl;
         }
@@ -195,7 +193,7 @@ void HumanPlayer::attack(Map *map, Player *player) {
         // If attacked territory is unoccupied, take it
         if (maxDefenseDice == 0) {
             cout << "Attacker wins battle and wins territory" << endl;
-            //Remove territory lost fromd defense player's owned lands
+            //Remove territory lost from defense player's owned lands
             player->lands.push_back(attackedTerritory);
             remove(attackedTerritory->getOwner()->lands.begin(), attackedTerritory->getOwner()->lands.end(),
                    attackedTerritory);
@@ -245,7 +243,7 @@ void HumanPlayer::attack(Map *map, Player *player) {
         int attackerDiceResults[3];
         int defenseDiceResults[3];
         //Roll dices and compare the highest result to see who wins
-        cout << "Rolling dices" << endl;
+        cout << "\t---Rolling dices---" << endl;
         while (true) {
             // Check if enough army to proceed to additional attack
             if (player->lands[countryInput - 1]->getTroops() < 2) {
@@ -255,7 +253,7 @@ void HumanPlayer::attack(Map *map, Player *player) {
             player->getDice()->roll(attackerDiceNumber, attackerDiceResults);
             cout << attackedTerritory->getOwner()->getName();
             attackedTerritory->getOwner()->getDice()->roll(defenseDiceNumber, defenseDiceResults);
-            cout << "Attacker score is " << attackerDiceResults[0] << " and defense score is " << defenseDiceResults[0]
+            cout << " Attacker rolls a " << attackerDiceResults[0] << " and defense rolls a " << defenseDiceResults[0]
                  << endl;
             if (attackerDiceResults[0] > defenseDiceResults[0]) {
                 cout << "Attacker wins duel" << endl;
@@ -264,9 +262,9 @@ void HumanPlayer::attack(Map *map, Player *player) {
                 cout << "Defense wins duel" << endl;
                 player->lands[countryInput - 1]->decTroops(1);
             }
-            cout << "Attacker country stats: " << player->lands[countryInput - 1]->getName() << "     Armies: "
+            cout << "\n\t---Updated stats---\n" << player->lands[countryInput - 1]->getName() << " (attacker) \n\tArmies: "
                  << player->lands[countryInput - 1]->getTroops() << std::endl;
-            cout << "Defense country stats: " << attackedTerritory->getName() << "     Armies: "
+            cout << attackedTerritory->getName() << " (defender) \n\tArmies: "
                  << attackedTerritory->getTroops() << std::endl;
             if (player->lands[countryInput - 1]->getTroops() < 2) {
                 cout << "Attacker lost battle and can't attack anymore" << endl;
@@ -275,7 +273,7 @@ void HumanPlayer::attack(Map *map, Player *player) {
             // If defense loses all defense, attacker gets territory
             if (attackedTerritory->getTroops() == 0) {
                 cout << "Attacker wins battle and wins territory" << endl;
-                //Remove territory lost fromd defense player's owned lands
+                //Remove territory lost from defense player's owned lands
                 player->lands.push_back(attackedTerritory);
                 remove(attackedTerritory->getOwner()->lands.begin(), attackedTerritory->getOwner()->lands.end(),
                        attackedTerritory);
@@ -314,46 +312,48 @@ void HumanPlayer::attack(Map *map, Player *player) {
 
             }
             // Ask to repeat
-            cout << "Would you like to attack this country again?(y/n)" << endl;
+            cout << "\nWould you like to attack this country again?(y/n)" << endl;
             char repeatAttackInput;
             cin >> repeatAttackInput;
             if (repeatAttackInput == 'n') {
                 return;
             } else if (repeatAttackInput != 'y') {
-                std::cout << "please enter y or n to proceed" << std::endl;
+                std::cout << "Please enter y or n to proceed" << std::endl;
                 continue;
             }
+
         }
     }
+    cout << "!! Player Done Attacking !!";
 }
 
-void AggressiveComputer::reinforce(Map *map, Player *player) {
-    std::cout << "Aggressive Computer Reinforcing" << std::endl;
-    player->recuperateArmies(map);
+void AggressiveComputer::reinforce(Map* map, Player* player){
 
-    //find land with most armies on
-    int maxIndex = 0;
-    for (std::vector<Territory>::size_type i = 1; i < player->lands.size(); i++) {
-        if (player->lands[i]->getTroops() > player->lands[maxIndex]->getTroops()) {
-            maxIndex = i;
-        }
-    }
-    //list all the countries
-    int count = 0;
-    for (std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
-        count++;
-        std::cout << count << ": " << player->lands[i]->getName() << "  Armies: " << player->lands[i]->getTroops()
-                  << std::endl;
-    }
-    player->lands[maxIndex]->incTroops(player->getArmies());
-    std::cout << "Player has " << player->getArmies() << " armies and Aggressive Computer decided to reinforce "
-              << player->lands[maxIndex]->getName() << std::endl;
-    std::cout << "New total on " << player->lands[maxIndex]->getName() << " is " << player->lands[maxIndex]->getTroops()
-              << std::endl;
-    player->setArmies(0);
+	std::cout << "Aggressive Computer Reinforcing" << std::endl;
+	player->recuperateArmies(map);
+
+	//find land with most armies on
+	int maxIndex = 0;
+	for(std::vector<Territory>::size_type i=1; i<player->lands.size(); i++){
+		if(player->lands[i]->getTroops() > player->lands[maxIndex]->getTroops()){
+			maxIndex = i;
+		}
+	}
+	//list all the countries
+	int count = 0;
+	for(std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
+		count++;
+		std::cout << count << ": " <<  player->lands[i]->getName() << "  Armies: " << player->lands[i]->getTroops() << std::endl;
+	}
+	player->lands[maxIndex]->incTroops(player->getArmies());
+	std::cout << "Player has " << player->getArmies() << " armies and Aggressive Computer decided to reinforce " << player->lands[maxIndex]->getName() << std::endl;
+	std::cout << "New total on " << player->lands[maxIndex]->getName() << " is " << player->lands[maxIndex]->getTroops() << std::endl;
+	player->setArmies(0);
 }
 
 void AggressiveComputer::attack(Map *map, Player *player) {
+
+
     // Territory attacking from set to default first
     Territory *attackingFromTerritory = player->lands[0];
     // Assigning territory to attack from to the strongest territory (most troops)
@@ -462,151 +462,154 @@ void AggressiveComputer::attack(Map *map, Player *player) {
     }
 }
 
+void AggressiveComputer::fortify(Player* player){
 
-void AggressiveComputer::fortify(Player *player) {
-    //finds the biggest possible move among all the possible countries that a user owns
-    std::cout << "Aggressive Computer fortifying" << std::endl;
-    int count = 1;
-    for (std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
-        std::cout << count << ": " << player->lands[i]->getName() << "  Armies: " <<
-                  player->lands[i]->getTroops() << std::endl;
-        player->printAdjacentCountries(player->lands[i]->adjacents);
-        count++;
-    }
 
-    int mostTroops = 0;
-    int country1 = -1;
-    int country2 = -1;
-    for (std::vector<Territory>::size_type i = 0; i < player->lands.size(); i++) {
-        for (std::vector<Territory>::size_type j = 0; j < player->lands[i]->adjacents.size(); j++) {
-            //check if bigger than mostTroops
-            if (player->lands[i]->getTroops() + (player->lands[i]->adjacents[j]->getTroops() - 1) > mostTroops &&
-                player->lands[i]->adjacents[j]->getOwner() != NULL) {
-                //check if player owns adjacent country and also if both countries have more than 1 troop
-                if (player->lands[i]->adjacents[j]->getOwner()->getName() == player->getName() &&
-                    player->lands[i]->getTroops() > 1 && player->lands[i]->adjacents[j]->getTroops() > 1) {
-                    country1 = i;
-                    country2 = j;
-                    mostTroops = player->lands[i]->getTroops() + (player->lands[i]->adjacents[j]->getTroops() - 1);
-                }
-            }
-        }
-    }
+	std::cout << "Aggressive Computer fortifying" << std::endl;
+	    int count = 1;
+	    for (std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
+	        std::cout << count << ": " << player->lands[i]->getName() << "  Armies: " <<
+	                  player->lands[i]->getTroops() << std::endl;
+	        player->printAdjacentCountries(player->lands[i]->adjacents);
+	        count++;
+	    }
 
-    //check if indexes were set
-    if (country1 == -1 || country2 == -1) {
-        std::cout << "Aggressive did not fortify" << std::endl;
-        return;
-    }
+	    int mostTroops = 0;
+	    int country1 = -1;
+	    int country2 = -1;
+	    for (std::vector<Territory>::size_type i = 0; i < player->lands.size(); i++) {
+	        for (std::vector<Territory>::size_type j = 0; j < player->lands[i]->adjacents.size(); j++) {
+	            //check if bigger than mostTroops
+	            if (player->lands[i]->getTroops() + (player->lands[i]->adjacents[j]->getTroops() - 1) > mostTroops &&
+	                player->lands[i]->adjacents[j]->getOwner() != NULL) {
+	                //check if player owns adjacent country and also if both countries have more than 1 troop
+	                if (player->lands[i]->adjacents[j]->getOwner()->getName() == player->getName() &&
+	                    player->lands[i]->getTroops() > 1 && player->lands[i]->adjacents[j]->getTroops() > 1) {
+	                    country1 = i;
+	                    country2 = j;
+	                    mostTroops = player->lands[i]->getTroops() + (player->lands[i]->adjacents[j]->getTroops() - 1);
+	                }
+	            }
+	        }
+	    }
 
-    std::cout << "Aggressive computer decided to move " << player->lands[country1]->adjacents[country2]->getTroops() - 1
-              << " armies from " <<
-              player->lands[country1]->adjacents[country2]->getName() << " to " << player->lands[country1]->getName()
-              << std::endl;
+	    //check if indexes were set
+	    if (country1 == -1 || country2 == -1) {
+	        std::cout << "Aggressive did not fortify" << std::endl;
+	        return;
+	    }
 
-    //increment troops on territory chosen
-    player->lands[country1]->incTroops(player->lands[country1]->adjacents[country2]->getTroops() - 1);
-    //set the adjacent countries troops back down to 1
-    player->lands[country1]->adjacents[country2]->setTroops(1);
+	    std::cout << "Aggressive computer decided to move " << player->lands[country1]->adjacents[country2]->getTroops() - 1
+	              << " armies from " <<
+	              player->lands[country1]->adjacents[country2]->getName() << " to " << player->lands[country1]->getName()
+	              << std::endl;
 
-    std::cout << "Aggressive Computer Fortified " << player->lands[country1]->getName() << ", new total is "
-              << player->lands[country1]->getTroops() << std::endl;
+	    //increment troops on territory chosen
+	    player->lands[country1]->incTroops(player->lands[country1]->adjacents[country2]->getTroops() - 1);
+	    //set the adjacent countries troops back down to 1
+	    player->lands[country1]->adjacents[country2]->setTroops(1);
+
+	    std::cout << "Aggressive Computer Fortified " << player->lands[country1]->getName() << ", new total is "
+	              << player->lands[country1]->getTroops() << std::endl;
 }
 
 
-void BenevolentComputer::reinforce(Map *map, Player *player) {
-    std::cout << "Benevolent Computer Reinforcing" << std::endl;
-    player->recuperateArmies(map);
+void BenevolentComputer::reinforce(Map* map, Player* player){
 
-    //find land with minimum armies
-    int minIndex = 0;
-    for (std::vector<Territory>::size_type i = 1; i < player->lands.size(); i++) {
-        if (player->lands[i]->getTroops() < player->lands[minIndex]->getTroops()) {
-            minIndex = i;
-        }
-    }
+	std::cout << "Benevolent Computer Reinforcing" << std::endl;
+	    player->recuperateArmies(map);
 
-    //list all the countries
-    int count = 0;
-    for (std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
-        count++;
-        std::cout << count << ": " << player->lands[i]->getName() << "  Armies: " << player->lands[i]->getTroops()
-                  << std::endl;
-    }
-    player->lands[minIndex]->incTroops(player->getArmies());
-    std::cout << "Player has " << player->getArmies() << " armies and Benevolent Computer decided to reinforce "
-              << player->lands[minIndex]->getName() << std::endl;
-    std::cout << "New total on " << player->lands[minIndex]->getName() << " is " << player->lands[minIndex]->getTroops()
-              << std::endl;
-    player->setArmies(0);
+	    //find land with minimum armies
+	    int minIndex = 0;
+	    for (std::vector<Territory>::size_type i = 1; i < player->lands.size(); i++) {
+	        if (player->lands[i]->getTroops() < player->lands[minIndex]->getTroops()) {
+	            minIndex = i;
+	        }
+	    }
+
+	    //list all the countries
+	    int count = 0;
+	    for (std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
+	        count++;
+	        std::cout << count << ": " << player->lands[i]->getName() << "  Armies: " << player->lands[i]->getTroops()
+	                  << std::endl;
+	    }
+	    player->lands[minIndex]->incTroops(player->getArmies());
+	    std::cout << "Player has " << player->getArmies() << " armies and Benevolent Computer decided to reinforce "
+	              << player->lands[minIndex]->getName() << std::endl;
+	    std::cout << "New total on " << player->lands[minIndex]->getName() << " is " << player->lands[minIndex]->getTroops()
+	              << std::endl;
+	    player->setArmies(0);
 }
 
 void BenevolentComputer::attack(Map *map, Player *player) {
-    cout<<"Benevolant computer will not attack"<<endl;
+
+    cout<<"!! Benevolent computer will not attack !!"<<endl;
 }
 
 struct comparisonClass {
     bool operator()(Territory *&i, Territory *&j) { return (i->getTroops() < j->getTroops()); }
 } comparisonFunction;
 
-void BenevolentComputer::fortify(Player *player) {
-    //Benevolant computer will find the country with min armies and check if it has adjacent countries that can move armies
-    //if there are no potential adjacent countries, then it moves to second smallest country
-    //it then moves half the armies of the biggest adjacent country to the smallest country
-    std::cout << "Benevolant Computer fortifying" << std::endl;
-    int count = 1;
-    for (std::vector<Territory>::size_type i = 0; i < player->lands.size(); i++) {
-        std::cout << count << ": " << player->lands[i]->getName() << "  Armies: " <<
-                  player->lands[i]->getTroops() << std::endl;
-        player->printAdjacentCountries(player->lands[i]->adjacents);
-        count++;
-    }
-    std::vector<Territory*> territories;
-    territories = player->lands;
-    //sort the players lands from min armies to max in new vector territories
-    std::sort(territories.begin(), territories.end(), comparisonFunction);
+void BenevolentComputer::fortify(Player* player){
 
-    int max = 0;
-    int maxIndex = -1;
-    int minIndex = -1;
-    for (std::vector<Territory>::size_type i = 0; i < territories.size(); i++) {
-        max = 0;
-        for (std::vector<Territory>::size_type j = 0; j < territories[i]->adjacents.size(); j++) {
-            if (territories[i]->adjacents[j]->getTroops() > max && territories[i]->adjacents[j]->getOwner() != NULL) {
-                if (territories[i]->adjacents[j]->getOwner()->getName() == player->getName() &&
-                    territories[i]->adjacents[j]->getTroops() > 1) {
-                    maxIndex = j;
-                    max = territories[i]->adjacents[j]->getTroops();
-                }
-            }
-        }
-        //break out of the loop if the max is found and its bigger than than 1 and set minIndex
-        if (max > 1) {
-            minIndex = i;
-            break;
-        }
-    }
+	//Benevolent computer will find the country with min armies and check if it has adjacent countries that can move armies
+	    //if there are no potential adjacent countries, then it moves to second smallest country
+	    //it then moves half the armies of the biggest adjacent country to the smallest country
+	    std::cout << "Benevolent Computer fortifying" << std::endl;
+	    int count = 1;
+	    for (std::vector<Territory>::size_type i = 0; i < player->lands.size(); i++) {
+	        std::cout << count << ": " << player->lands[i]->getName() << "  Armies: " <<
+	                  player->lands[i]->getTroops() << std::endl;
+	        player->printAdjacentCountries(player->lands[i]->adjacents);
+	        count++;
+	    }
+	    std::vector<Territory*> territories;
+	    territories = player->lands;
+	    //sort the players lands from min armies to max in new vector territories
+	    std::sort(territories.begin(), territories.end(), comparisonFunction);
 
-    if (maxIndex == -1 || minIndex == -1) {
-        std::cout << "Benevolant Computer did not fortify" << std::endl;
-        return;
-    }
+	    int max = 0;
+	    int maxIndex = -1;
+	    int minIndex = -1;
+	    for (std::vector<Territory>::size_type i = 0; i < territories.size(); i++) {
+	        max = 0;
+	        for (std::vector<Territory>::size_type j = 0; j < territories[i]->adjacents.size(); j++) {
+	            if (territories[i]->adjacents[j]->getTroops() > max && territories[i]->adjacents[j]->getOwner() != NULL) {
+	                if (territories[i]->adjacents[j]->getOwner()->getName() == player->getName() &&
+	                    territories[i]->adjacents[j]->getTroops() > 1) {
+	                    maxIndex = j;
+	                    max = territories[i]->adjacents[j]->getTroops();
+	                }
+	            }
+	        }
+	        //break out of the loop if the max is found and its bigger than than 1 and set minIndex
+	        if (max > 1) {
+	            minIndex = i;
+	            break;
+	        }
+	    }
 
-    std::cout << "Benevolant computer decided to move half the troops from "
-              << territories[minIndex]->adjacents[maxIndex]->getName() <<
-              " to " << territories[minIndex]->getName() << std::endl;
+	    if (maxIndex == -1 || minIndex == -1) {
+	        std::cout << "Benevolent Computer did not fortify" << std::endl;
+	        return;
+	    }
 
-    int transferTroops =
-            (territories[minIndex]->getTroops() + territories[minIndex]->adjacents[maxIndex]->getTroops()) / 2;
+	    std::cout << "Benevolent computer decided to move half the troops from "
+	              << territories[minIndex]->adjacents[maxIndex]->getName() <<
+	              " to " << territories[minIndex]->getName() << std::endl;
 
-    //increment troops on territory chosen
-    territories[minIndex]->incTroops(transferTroops);
-    //decrement troops on max country
-    territories[minIndex]->adjacents[maxIndex]->setTroops(
-            territories[minIndex]->adjacents[maxIndex]->getTroops() - transferTroops);
+	    int transferTroops =
+	            (territories[minIndex]->getTroops() + territories[minIndex]->adjacents[maxIndex]->getTroops()) / 2;
 
-    std::cout << "Benevolant Computer Fortified " << territories[minIndex]->getName() << ", new total is "
-              << territories[minIndex]->getTroops() << std::endl;
+	    //increment troops on territory chosen
+	    territories[minIndex]->incTroops(transferTroops);
+	    //decrement troops on max country
+	    territories[minIndex]->adjacents[maxIndex]->setTroops(
+	            territories[minIndex]->adjacents[maxIndex]->getTroops() - transferTroops);
+
+	    std::cout << "Benevolent Computer Fortified " << territories[minIndex]->getName() << ", new total is "
+	              << territories[minIndex]->getTroops() << std::endl;
 
 }
 
@@ -622,8 +625,6 @@ int maxDiceToRoll(bool isAttacker, Territory *territory) {
     }
 }
 
-PlayerStrategies::~PlayerStrategies() {
+PlayerStrategies::~PlayerStrategies(){
 }
-
-
 
