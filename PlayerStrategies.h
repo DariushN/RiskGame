@@ -1,6 +1,6 @@
 #include "Map.h"
 #include "Player.h"
-#include "Subject.h"
+#include "GameObserver.h"
 #include <cstdlib>
 #include <iostream>
 class Player;

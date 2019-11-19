@@ -7,7 +7,7 @@
 #include "Map.h"
 #include "Cards.h"
 #include "PlayerStrategies.h"
-#include "Subject.h"
+#include "GameObserver.h"
 
 class Territory;
 class Continent;

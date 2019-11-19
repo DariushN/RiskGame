@@ -18,7 +18,7 @@
 #include "Dice.h"
 #include "Cards.h"
 #include "Player.h"
-#include "Subject.h"
+#include "GameObserver.h"
 using std::vector;
 using std::string;
 
