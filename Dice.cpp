@@ -37,9 +37,14 @@ Dice::Dice(const Dice& orig){
 }
 
 Dice& Dice::operator=(const Dice &orig) {
-    counts =orig.counts;
-    percentages = orig.percentages;
-    n = orig.n;
+    if(&orig!=this){
+        delete counts;
+        delete percentages;
+        delete n;
+    }
+    counts = new int(*counts);
+    percentages = new double(*percentages);
+    n = new int(*orig.n);
     return *this;
 }
 

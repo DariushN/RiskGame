@@ -23,9 +23,18 @@ Map::Map(const Map& orig) {
 }
 
 Map& Map::operator=(const Map &orig) {
-    name = orig.name;
-    valid = orig.valid;
-    Territories = orig.Territories;
+    if(&orig!=this){
+        delete name;
+        delete valid;
+        for(auto x:Territories){
+            delete x;
+        }
+        name = new string(*orig.name);
+        valid = new bool(*orig.valid);
+        for(auto&& x:orig.Territories){
+            Territories.push_back(new Territory(*x));
+        }
+    }
     return *this;
 }
 
@@ -178,10 +187,20 @@ Continent::Continent(const Continent& orig) {//Copy Constructor
 }
 
 Continent& Continent::operator=(const Continent &orig) {
-    ID = orig.ID;
-    name = orig.name;
-    value = orig.value;
-    Territories = orig.Territories;
+    if(&orig!=this){
+        delete ID;
+        delete name;
+        delete value;
+        for(auto x: Territories){
+            delete x;
+        }
+        this->ID = new int(*orig.ID);
+        this->name = new string(*orig.name);
+        this->value = new int(*orig.value);
+        for(auto&& x:orig.Territories){
+            Territories.push_back(new Territory(*x));
+        }
+    }
     return *this;
 }
 
@@ -246,9 +265,26 @@ Territory::Territory(const Territory& orig) {//Copy constructor
 }
 
 Territory& Territory::operator=(const Territory &orig) {
-    ID = orig.ID;
-    name = orig.name;
-    troops = orig.troops;
+    if(&orig!=this){
+        delete ID;
+        delete name;
+        delete troops;
+        delete location;
+        delete owner;
+        neighbors = orig.neighbors;
+        for(auto&& x: orig.neighbors){
+            neighbors.push_back(new int(*x));
+        }
+        ID = new int(*orig.ID);
+        name = new string(*orig.name);
+        troops = new int(*orig.troops);
+        location = new Continent(*orig.location);
+        for(auto&& x: orig.adjacents){
+            adjacents.push_back(new Territory(*x));
+        }
+        owner = new Player(*orig.owner);
+
+    }
     return *this;
 }
 

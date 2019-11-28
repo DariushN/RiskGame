@@ -30,7 +30,10 @@ GameObserver::GameObserver(Player* p) {
 }
 
 GameObserver& GameObserver:: operator = (const GameObserver &g){
-	subject = g.subject;
+    if(this!=&g){
+        delete subject;
+        subject = new Player(*g.subject);
+    }
 	return *this;
 }
 
@@ -62,7 +65,10 @@ StatsObserver::StatsObserver(GameEngine* p) {
 }
 
 StatsObserver& StatsObserver:: operator = (const StatsObserver &g){
-	subject = g.subject;
+	if(&g!=this){
+	    delete subject;
+        subject = new GameEngine(*g.subject);
+	}
 	return *this;
 }
 

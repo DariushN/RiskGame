@@ -15,7 +15,14 @@ Deck::Deck(vector<string *> territories) {
 }
 
 Deck& Deck::operator=(const Deck &orig) {
-    Cards=orig.Cards;
+    if(&orig!=this){
+        for(auto&& x:Cards){
+            delete x;
+        }
+        for(auto && x:orig.Cards){
+            Cards.push_back(new Card(*x));
+        }
+    }
     return *this;
 }
 // Overloaded constructor (initialize out of territories)
@@ -93,8 +100,12 @@ Card::Card() {
 }
 
 Card& Card::operator=(const Card &orig) {
-    type = orig.type;
-    territory = orig.territory;
+    if(&orig!=this){
+        delete type;
+        delete territory;
+        type = new string(*orig.type);
+        territory = new string(*orig.territory);
+    }
     return *this;
 }
 Card::Card(const Card& orig){
@@ -126,7 +137,14 @@ Card::~Card() {
 Hand::Hand(){}; //Default constructor
 
 Hand& Hand::operator=(const Hand &orig) {
-    Cards=orig.Cards;
+    if(&orig!=this){
+        for(auto x:Cards){
+            delete x;
+        }
+        for(auto && x:orig.Cards){
+            Cards.push_back(new Card(*x));
+        }
+    }
     return *this;
 }
 

@@ -52,12 +52,24 @@ GameEngine::GameEngine(const GameEngine& orig) {
 }
 
 GameEngine& GameEngine::operator=(const GameEngine &orig) {
-	players = orig.players;
-	deck = orig.deck;
-	MAP = orig.MAP;
-	turn = orig.turn;
-	phase = orig.phase;
-	return *this;
+    players = orig.players;
+    deck = orig.deck;
+    MAP = orig.MAP;
+    turn = orig.turn;
+    phase = orig.phase;
+     if (&orig==this){
+           delete players;
+           delete deck;
+           delete MAP;
+           delete turn;
+           delete phase;
+           players = new Player(*orig.players);
+           deck = new Deck(*orig.deck);
+           MAP = new Map(*orig.MAP);
+           turn = new Player(*orig.turn);
+           phase = new std::string(*orig.phase);
+       }
+
 }
 // Destructor
 GameEngine::~GameEngine() {

@@ -54,6 +54,28 @@ class BenevolentComputer : public PlayerStrategies {
 	}
 };
 
+class RandomComputer : public PlayerStrategies {
+	void reinforce(Map* map, Player* player); // Reinforce method
+	void attack(Map* map, Player* player); // Attack method
+	void fortify(Player* player); // Fortify method
+
+	// Inline destructor
+	~RandomComputer(){
+		std::cout << "Random Computer destructor \n";
+	}
+};
+
+class CheaterComputer : public PlayerStrategies {
+	void reinforce(Map* map, Player* player); // Reinforce method
+	void attack(Map* map, Player* player); // Attack method
+	void fortify(Player* player); // Fortify method
+
+	// Inline destructor
+	~CheaterComputer(){
+		std::cout << "Cheater Computer destructor \n";
+	}
+};
+
 int maxDiceToRoll(bool isAttacker, Territory *territory); // Maximum amount of dice a player can roll
 
 #endif /* PLAYERSTRATEGIES_H_ */

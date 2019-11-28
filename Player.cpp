@@ -29,12 +29,22 @@ Player::Player(const Player &orig) {
 }
 
 Player& Player::operator=(const Player &orig) {
-    name = orig.name;
-    id = orig.id;
-    dice = orig.dice;
-    armies = orig.armies;
-    hand = orig.hand;
-	phase = orig.phase;
+    if(&orig!=this){
+        delete name;
+        delete id;
+        delete dice;
+        delete armies;
+        delete hand;
+        delete phase;
+        delete strategy;
+        name = new string(*orig.name);
+        id = new int(*orig.id);
+        dice = new Dice(*orig.dice);
+        armies = new int(*orig.armies);
+        hand = new Hand(*orig.hand);
+        phase = new std::string(*orig.phase);
+        strategy = new HumanPlayer();
+    }
     return *this;
 }
 

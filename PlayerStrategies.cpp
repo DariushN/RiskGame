@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <limits>
 #include <vector>
+#include <random>
 
 void HumanPlayer::reinforce(Map* map, Player* player){
 
@@ -623,6 +624,123 @@ void BenevolentComputer::fortify(Player* player){
 			<< territories[minIndex]->getTroops() << std::endl;
 
 }
+
+
+void RandomComputer::attack(Map *map, Player *player) {
+
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(0,player->lands.size()-1); // distribution in range [1, 6]
+
+    int generatedNumber =  dist6(rng);
+    // Territory attacking from set to default first
+    Territory *attackingFromTerritory = player->lands[0];
+    // Assigning territory to attack from to the strongest territory (most troops)
+    for (int i = 0; i < player->lands.size(); i++) {
+        if (player->lands[i]->getTroops() > attackingFromTerritory->getTroops())
+            attackingFromTerritory = player->lands[i];
+    }
+    while(true) {
+        std::cout << "Attacking aggressively" << std::endl;
+        if (player->lands.size() < 1) {
+            cout << "Player does not have a territory";
+            return;
+        }
+        // Minimum of 2 armies to attack from is required
+        if (attackingFromTerritory->getTroops() < 2) {
+            cout << "Not enough army on strongest territory" << endl;
+            return;
+        }
+        cout << "Attacking from " << attackingFromTerritory->getName() << " with troops amount "
+             << attackingFromTerritory->getTroops() << endl;
+        // Set default attacked territory
+        Territory *attackedTerritory = attackingFromTerritory->adjacents[0];
+        // Taking an adjacent country to attack which isn't the players'
+        bool foundAttackedTerritory = false;
+        for (int i = 0; i < attackingFromTerritory->adjacents.size(); i++) {
+            if (attackingFromTerritory->adjacents[i]->getOwner()->getName() != player->getName()) {
+                foundAttackedTerritory = true;
+                attackedTerritory = attackingFromTerritory->adjacents[i];
+                break;
+            }
+        }
+        if (!foundAttackedTerritory) {
+            cout << "No adjacent country to attack" << endl;
+            return;
+        }
+        cout << "Attacking " << attackedTerritory->getName() << " with troops amount " << attackedTerritory->getTroops()
+             << endl;
+
+        // Determine how many dices user wants to roll after determining the max amount
+        int maxAttackerDice = maxDiceToRoll(true, attackingFromTerritory);
+        int maxDefenseDice = maxDiceToRoll(false, attackedTerritory);
+        // If attacked territory is unoccupied, take it
+        if (maxDefenseDice == 0) {
+            cout << "Attacker wins battle and wins territory" << endl;
+            //Remove territory lost from defense player's owned lands
+            player->lands.push_back(attackedTerritory);
+            remove(attackedTerritory->getOwner()->lands.begin(), attackedTerritory->getOwner()->lands.end(),
+                   attackedTerritory);
+            //resize the array
+            attackedTerritory->getOwner()->lands.resize(attackedTerritory->getOwner()->lands.size() - 1);
+            attackedTerritory->setOwner(player);
+            //Move 1 army from attacked territory to new defeated territory
+            attackedTerritory->setTroops(1);
+            attackingFromTerritory->decTroops(1);
+            std::cout << "Fortified " << player->lands.back()->getName() << ", new total is "
+                      << player->lands.back()->getTroops() << std::endl;
+        }
+        int attackerDiceResults[3];
+        int defenseDiceResults[3];
+        //Roll dices and compare the highest result to see who wins
+        cout << "Rolling dices" << endl;
+        while (true) {
+            // Check if enough army to proceed to additional attack
+            if (attackingFromTerritory->getTroops() < 2) {
+                cout << "Not enough army on territory" << endl;
+                break;
+            }
+            player->getDice()->roll(maxAttackerDice, attackerDiceResults);
+            attackedTerritory->getOwner()->getDice()->roll(maxDefenseDice, defenseDiceResults);
+            cout << "Attacker score is " << attackerDiceResults[0] << " and defense score is " << defenseDiceResults[0]
+                 << endl;
+            if (attackerDiceResults[0] > defenseDiceResults[0]) {
+                cout << "Attacker wins duel" << endl;
+                attackedTerritory->decTroops(1);
+            } else {
+                cout << "Defense wins duel" << endl;
+                attackingFromTerritory->decTroops(1);
+            }
+            cout << "Attacker country stats: " << attackingFromTerritory->getName() << "     Armies: "
+                 << attackingFromTerritory->getTroops() << std::endl;
+            cout << "Defense country stats: " << attackedTerritory->getName() << "     Armies: "
+                 << attackedTerritory->getTroops() << std::endl;
+            if (attackingFromTerritory->getTroops() < 2) {
+                cout << "Attacker lost battle and can't attack anymore" << endl;
+                return;
+            }
+            // If defense loses all defense, attacker gets territory
+            if (attackedTerritory->getTroops() == 0) {
+                cout << "Attacker wins battle and wins territory" << endl;
+                //Remove territory lost from defense player's owned lands
+                player->lands.push_back(attackedTerritory);
+                remove(attackedTerritory->getOwner()->lands.begin(), attackedTerritory->getOwner()->lands.end(),
+                       attackedTerritory);
+                //resize the array
+                attackedTerritory->getOwner()->lands.resize(attackedTerritory->getOwner()->lands.size() - 1);
+                attackedTerritory->setOwner(player);
+                //Move 1 army from attacked territory to new defeated territory
+                attackedTerritory->setTroops(1);
+                attackingFromTerritory->decTroops(1);
+                std::cout << "Fortified " << player->lands.back()->getName() << ", new total is "
+                          << player->lands.back()->getTroops() << std::endl;
+                break;
+
+            }
+        }
+    }
+}
+
 
 int maxDiceToRoll(bool isAttacker, Territory *territory) {
 	if (isAttacker) {
