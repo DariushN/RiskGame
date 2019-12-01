@@ -781,6 +781,7 @@ void RandomComputer::fortify(Player *player) {
 				int troopsToTransfer = player->lands[indexes[r]]->adjacents[i]->getTroops() / 2;
 				std::cout << "\nMoving " << troopsToTransfer << " troops from " << player->lands[indexes[r]]->adjacents[i]->getName() <<
 						" to " << player->lands[indexes[r]]->getName() << endl;
+				player->lands[indexes[r]]->incTroops(troopsToTransfer);
 				player->lands[indexes[r]]->adjacents[i]->decTroops(troopsToTransfer);
 				break;
 			}
