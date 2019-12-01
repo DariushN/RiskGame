@@ -760,7 +760,6 @@ void RandomComputer::attack(Map *map, Player *player) {
 }
 
 void RandomComputer::fortify(Player *player) {}
-void RandomComputer::reinforce(Map *map, Player *player) {}
 
 void CheaterComputer::attack(Map *map, Player *player) {
     cout << "Cheater attacks!"<< endl<<endl;
@@ -782,9 +781,73 @@ void CheaterComputer::attack(Map *map, Player *player) {
     }
 }
 
-void CheaterComputer::fortify(Player *player) {}
-void CheaterComputer::reinforce(Map *map, Player *player) {}
+void CheaterComputer::reinforce(Map* map, Player* player){
+	std::cout << "Cheater Computer reinforcing" << endl;
+	int count = 1;
+	std::cout << "\n Territories owned by player:" << endl;
+	for(std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
+		std::cout << count << ": " <<  player->lands[i]->getName() << "     Armies: " << player->lands[i]->getTroops() << std::endl;
+		count++;
+	}
 
+	count =1;
+	std::cout << "\nCheater computer will double the armies on each territory\nNew Territories:" << endl;
+	for(std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
+		player->lands[i]->incTroops(player->lands[i]->getTroops());
+		std::cout << count << ": " <<  player->lands[i]->getName() << "     Armies: " << player->lands[i]->getTroops() << std::endl;
+		count++;
+	}
+
+	std::cout << "Computer Cheater done reinforcing" << endl;
+}
+
+void CheaterComputer::fortify(Player* player){
+	std::cout << "Cheater computer fortifying" << endl;
+
+	int count = 1;
+	std::cout << "\n Territories owned by player:" << endl;
+	for(std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
+		std::cout << count << ": " <<  player->lands[i]->getName() << "     Armies: " << player->lands[i]->getTroops() << std::endl;
+		count++;
+	}
+	count =1;
+	std::cout << "\nCheater computer decided to fortify all countries with adjacent countries that are owned by enemy" << endl;
+
+	for(std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++){
+		if(shouldFortify(player->lands[i]->adjacents, player)){
+			player->lands[i]->incTroops(player->lands[i]->getTroops());
+		}
+		std::cout << count << ": " <<  player->lands[i]->getName() << "     Armies: " << player->lands[i]->getTroops() << std::endl;
+		count++;
+	}
+	std::cout << "Computer Cheater done fortifying" << endl;
+}
+bool CheaterComputer::shouldFortify(std::vector<Territory*> adjLands, Player* player){
+	for(std::vector<Territory>::size_type i = 0; i != adjLands.size(); i++){
+		//check if at least one of the adjacent countries is not owned by the player
+		if(adjLands[i]->getOwner()->getName() != player->getName()){
+			return true;
+		}
+	}
+	return false;
+}
+
+void RandomComputer::reinforce(Map* map, Player* player){
+	std::cout << "Random Computer reinforcing" << endl;
+	player->recuperateArmies(map);
+	int count = 1;
+	std::cout << "\n Territories owned by player:" << endl;
+	for(std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
+		std::cout << count << ": " <<  player->lands[i]->getName() << "     Armies: " << player->lands[i]->getTroops() << std::endl;
+		count++;
+	}
+	count = 1;
+	int r = rand() % player->lands.size();
+	std::cout << "Random Computer decided to reinforce " << player->lands[r]->getName() << endl;
+	player->lands[r]->incTroops(player->getArmies());
+	std::cout << "New Total on " << player->lands[r]->getName() << " is " << player->lands[r]->getTroops() << endl;
+	std::cout << "Random Computer done reinforcing" << endl;
+}
 
 int maxDiceToRoll(bool isAttacker, Territory *territory) {
 	if (isAttacker) {
