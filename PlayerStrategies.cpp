@@ -759,7 +759,43 @@ void RandomComputer::attack(Map *map, Player *player) {
     }
 }
 
-void RandomComputer::fortify(Player *player) {}
+void RandomComputer::fortify(Player *player) {
+	std::cout << "Random computer fortifying" << endl;
+	std::vector<int> indexes;
+	for(std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++){
+		for(std::vector<Territory>::size_type j = 0; j != player->lands[i]->adjacents.size(); j++){
+			if(player->lands[i]->adjacents[j]->getOwner()->getName() == player->getName()){
+				if(player->lands[i]->adjacents[j]->getTroops() > 1){
+					//push index into vector
+					indexes.push_back(i);
+					break;
+				}
+			}
+		}
+	}
+	int r = rand() % indexes.size();
+	for(std::vector<Territory>::size_type i = 0; i != player->lands[indexes[r]]->adjacents.size(); i++){
+		if(player->lands[indexes[r]]->adjacents[i]->getOwner()->getName() == player->getName()){
+			if(player->lands[indexes[r]]->adjacents[i]->getTroops() > 1){
+				std::cout << "\nRandom Computer decided to fortify " << player->lands[indexes[r]]->getName() << endl;
+				int troopsToTransfer = player->lands[indexes[r]]->adjacents[i]->getTroops() / 2;
+				std::cout << "\nMoving " << troopsToTransfer << " troops from " << player->lands[indexes[r]]->adjacents[i]->getName() <<
+						" to " << player->lands[indexes[r]]->getName() << endl;
+				player->lands[indexes[r]]->adjacents[i]->decTroops(troopsToTransfer);
+				break;
+			}
+		}
+	}
+
+	int count = 1;
+	std::cout << "New country values:" << endl;
+	for(std::vector<Territory>::size_type i = 0; i != player->lands.size(); i++) {
+		std::cout << count << ": " <<  player->lands[i]->getName() << "     Armies: " << player->lands[i]->getTroops() << std::endl;
+		count++;
+	}
+
+	std::cout << "Random done computer fortifying" << endl;
+}
 
 void CheaterComputer::attack(Map *map, Player *player) {
     cout << "Cheater attacks!"<< endl<<endl;
