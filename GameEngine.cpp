@@ -69,7 +69,7 @@ GameEngine& GameEngine::operator=(const GameEngine &orig) {
            turn = new Player(*orig.turn);
            phase = new std::string(*orig.phase);
        }
-
+     return *this;
 }
 // Destructor
 GameEngine::~GameEngine() {

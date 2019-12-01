@@ -1,7 +1,6 @@
 #include "PlayerStrategies.h"
 #include <iostream>
 #include <string>
-#include <math.h>
 #include <algorithm>
 #include <limits>
 #include <vector>
@@ -630,48 +629,52 @@ void RandomComputer::attack(Map *map, Player *player) {
 
     std::random_device dev;
     std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(0,player->lands.size()-1); // distribution in range [1, 6]
+    //generating number in range of lands size
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(0,player->lands.size()-1);
 
     int generatedNumber =  dist6(rng);
-    // Territory attacking from set to default first
-    Territory *attackingFromTerritory = player->lands[0];
-    // Assigning territory to attack from to the strongest territory (most troops)
-    for (int i = 0; i < player->lands.size(); i++) {
-        if (player->lands[i]->getTroops() > attackingFromTerritory->getTroops())
-            attackingFromTerritory = player->lands[i];
-    }
+    // Territory attacking from set to random value generated
+    Territory *attackingFromTerritory = player->lands[generatedNumber];
     while(true) {
-        std::cout << "Attacking aggressively" << std::endl;
+        std::cout << "Attacking randomly" << std::endl;
         if (player->lands.size() < 1) {
             cout << "Player does not have a territory";
             return;
         }
         // Minimum of 2 armies to attack from is required
         if (attackingFromTerritory->getTroops() < 2) {
-            cout << "Not enough army on strongest territory" << endl;
+            cout << "Not enough army on random territory" << endl;
             return;
         }
         cout << "Attacking from " << attackingFromTerritory->getName() << " with troops amount "
              << attackingFromTerritory->getTroops() << endl;
         // Set default attacked territory
-        Territory *attackedTerritory = attackingFromTerritory->adjacents[0];
+        Territory *attackedTerritory;
         // Taking an adjacent country to attack which isn't the players'
         bool foundAttackedTerritory = false;
-        for (int i = 0; i < attackingFromTerritory->adjacents.size(); i++) {
-            if (attackingFromTerritory->adjacents[i]->getOwner()->getName() != player->getName()) {
-                foundAttackedTerritory = true;
-                attackedTerritory = attackingFromTerritory->adjacents[i];
-                break;
-            }
+        int countNumberAdjOwned=0;
+        for(auto x:attackingFromTerritory->adjacents){
+            if (x->getOwner()->getName()==player->getName())
+                countNumberAdjOwned++;
         }
-        if (!foundAttackedTerritory) {
-            cout << "No adjacent country to attack" << endl;
+        if (countNumberAdjOwned==attackingFromTerritory->adjacents.size()){
+            cout << "No adjacent country to attack from random country" << endl;
             return;
+        }
+
+        while(!foundAttackedTerritory) {
+            //generating number in range of lands size
+            std::uniform_int_distribution<std::mt19937::result_type> dist6(0,attackingFromTerritory->adjacents.size()-1);
+            int generatedRanNumber =  dist6(rng);
+            if(attackingFromTerritory->adjacents[generatedRanNumber]->getOwner()->getName()!=player->getName()){
+                attackedTerritory = attackingFromTerritory->adjacents[generatedRanNumber];
+                foundAttackedTerritory = true;
+            }
         }
         cout << "Attacking " << attackedTerritory->getName() << " with troops amount " << attackedTerritory->getTroops()
              << endl;
 
-        // Determine how many dices user wants to roll after determining the max amount
+        // Determine how many dices computer can roll
         int maxAttackerDice = maxDiceToRoll(true, attackingFromTerritory);
         int maxDefenseDice = maxDiceToRoll(false, attackedTerritory);
         // If attacked territory is unoccupied, take it
@@ -692,9 +695,17 @@ void RandomComputer::attack(Map *map, Player *player) {
         }
         int attackerDiceResults[3];
         int defenseDiceResults[3];
+        // Determining the random number of times the attacker will attack;
+        std::uniform_int_distribution<std::mt19937::result_type> dist6(0,12);
+
+        int generatedRowsNumber =  dist6(rng);
+        cout << "Random Computer will attack for a total of "<<generatedRowsNumber<<" number of times" << endl;
         //Roll dices and compare the highest result to see who wins
         cout << "Rolling dices" << endl;
-        while (true) {
+
+        while (generatedRowsNumber>0) {
+            cout << "Attacking for time number "<<generatedRowsNumber << endl;
+            generatedRowsNumber--;
             // Check if enough army to proceed to additional attack
             if (attackingFromTerritory->getTroops() < 2) {
                 cout << "Not enough army on territory" << endl;
@@ -729,17 +740,50 @@ void RandomComputer::attack(Map *map, Player *player) {
                 //resize the array
                 attackedTerritory->getOwner()->lands.resize(attackedTerritory->getOwner()->lands.size() - 1);
                 attackedTerritory->setOwner(player);
-                //Move 1 army from attacked territory to new defeated territory
-                attackedTerritory->setTroops(1);
-                attackingFromTerritory->decTroops(1);
-                std::cout << "Fortified " << player->lands.back()->getName() << ", new total is "
-                          << player->lands.back()->getTroops() << std::endl;
-                break;
+                //Move random army from attacked territory to new defeated territory
+                // Determining the random number of reinforcement
+                std::uniform_int_distribution<std::mt19937::result_type> dist6(1,attackingFromTerritory->getTroops()-1);
 
+                int generatedReinforcementNumber =  dist6(rng);
+                attackedTerritory->setTroops(generatedReinforcementNumber);
+                attackingFromTerritory->decTroops(generatedReinforcementNumber);
+                std::cout << "Fortified " << player->lands.back()->getName() << ", new total (randomly generated) "
+                          << player->lands.back()->getTroops() << std::endl;
+                return;
+            }
+        }
+        if(generatedRowsNumber<1){
+            cout<<"Random attacker finished random amount of turns";
+            return;
+        }
+    }
+}
+
+void RandomComputer::fortify(Player *player) {}
+void RandomComputer::reinforce(Map *map, Player *player) {}
+
+void CheaterComputer::attack(Map *map, Player *player) {
+    cout << "Cheater attacks!"<< endl<<endl;
+
+    for(auto x:player->lands){
+        cout << "\n\nAttacker plans on cheating with territory " << x->getName() << endl;
+        for(auto y:x->adjacents){
+            if(y->getOwner()->getName()!=x->getOwner()->getName()){
+                cout << "Attacker cheats and gets adjacent territory " << y->getName() << endl;
+                //Remove territory lost from defense player's owned lands
+                player->lands.push_back(y);
+                remove(y->getOwner()->lands.begin(), y->getOwner()->lands.end(),
+                       y);
+                //resize the array
+                y->getOwner()->lands.resize(y->getOwner()->lands.size() - 1);
+                y->setOwner(player);
             }
         }
     }
 }
+
+void CheaterComputer::fortify(Player *player) {}
+void CheaterComputer::reinforce(Map *map, Player *player) {}
 
 
 int maxDiceToRoll(bool isAttacker, Territory *territory) {
