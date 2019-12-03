@@ -245,8 +245,8 @@ Territory::Territory() {
     //Allocate memory to pointers.
     ID = new int(1);
     name = new string("");
-    troops = new int(0);
-    owner = NULL;
+    troops = new unsigned int(0);
+    owner = nullptr;
 }
 
 Territory::Territory(const Territory& orig) {//Copy constructor
@@ -256,7 +256,7 @@ Territory::Territory(const Territory& orig) {//Copy constructor
     }
     ID = new int(*orig.ID);
     name = new string(*orig.name);
-    troops = new int(*orig.troops);
+    troops = new unsigned int(*orig.troops);
     location = new Continent(*orig.location);
     for(auto&& x: orig.adjacents){
         adjacents.push_back(new Territory(*x));
@@ -277,7 +277,7 @@ Territory& Territory::operator=(const Territory &orig) {
         }
         ID = new int(*orig.ID);
         name = new string(*orig.name);
-        troops = new int(*orig.troops);
+        troops = new unsigned int(*orig.troops);
         location = new Continent(*orig.location);
         for(auto&& x: orig.adjacents){
             adjacents.push_back(new Territory(*x));
@@ -305,11 +305,11 @@ void Territory::setName(std::string a){//Set the name
     *name = a;
 }
 
-int Territory::getTroops(){//Return # of troops
+unsigned int Territory::getTroops(){//Return # of troops
     return *troops;
 }
 
-void Territory::setTroops(int a){//Set # of troops
+void Territory::setTroops(unsigned int a){//Set # of troops
     *troops = a;
 }
 
@@ -337,7 +337,7 @@ bool Territory::isAdj(Territory* a){//Checks if a points to a neighbor in the ad
     return false;
 }
 
-Player* Territory::getOwner() const {
+Player* Territory::getOwner() {
     return owner;
 }
 

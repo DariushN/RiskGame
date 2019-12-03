@@ -56,6 +56,7 @@ public:
 	void setPhase(std::string p) {
 		*phase = p;
 	}
+        void begin();
 	void mainGameLoop(); // Allow a player to make a move (reinforce, attack, fortify)
 	void mainGameLoop(Map* MAP, std::vector<Player*> players); // Overloaded game loop
 private:
@@ -66,6 +67,7 @@ private:
 	Player* turn;
 	vector<string> get_all_files_names_within_folder(string folder); // Vector of file names within directory
     string* phase;
+    string TournametGameLoop(Map* m,Player* p, int n_turns);
     
 };
 

@@ -80,8 +80,8 @@ public:
     virtual ~Territory();//Destructor
     std::string getName();//Returns name
     void setName(std::string a);//sets name
-    int getTroops();//returns # of troops
-    void setTroops(int a);//sets number of troops
+    unsigned int getTroops();//returns # of troops
+    void setTroops(unsigned int a);//sets number of troops
     void incTroops(int a = 1);//Increases number of troops
     void decTroops(int a = 1);//Decreases number of troops
     void addNeighbor(int a);//Adds PIN of neighbor
@@ -89,7 +89,7 @@ public:
     bool isAdj(Territory *a);//Checks if the territory is adjacent
     std::string toString();//Returns string with the Territory's data
     void setOwner(Player *a);//Sets the pointer to owner
-    Player* getOwner() const;
+    Player* getOwner();
     std::vector <int*> neighbors;//vector of PINs of neighbors (not used)
     void setLocation(Continent* a);//Sets Continent that it is contained in.
     std::vector <Territory*> adjacents;//Vector containing the adjacency list.
@@ -97,7 +97,7 @@ public:
 private:
     int* ID;//PIN
     std::string* name;//Name of Territory
-    int* troops;//Number of troops
+    unsigned int* troops;//Number of troops
     Player* owner;//Owner of this territory.
 };
 #include "Player.h"

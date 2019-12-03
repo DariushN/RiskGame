@@ -118,6 +118,8 @@ void StatsObserver::Update() {
 		if(numControlled == 0){
 			continue;
 		}
+                // Print celebratory message
+               
 		percentage = (numControlled/numCountries)*100; // Calculate percentage
 
 		printElement("|",5);
@@ -126,11 +128,21 @@ void StatsObserver::Update() {
 		printElement(percentage, 0);
 		printElement("%",7);
 		printElement("|",0);
-		cout << endl;
+		cout << endl; 
+                
 	}
 
 	printElement("-----------------------------------",0);
 	cout << endl;
+        for(int i = 0; i < subject->getNumPlayers(); i++){
+            numControlled = (subject->getPlayers()+i)->lands.size(); // Number of countries controlled by the player
+            if(numControlled == numCountries){
+                cout << "\n\t****************************************" << endl;
+                cout << "\tCongratulations! The Winner is " << (subject->getPlayers()+i)->getName() << endl; // Display winner
+                cout << "\tThanks for playing!" << endl;
+                cout << "\t****************************************\n" << endl;
+            }
+        }
 
 }
 

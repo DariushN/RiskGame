@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "PlayerStrategies.h"
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -232,3 +233,6 @@ Player::~Player() {
 	delete phase;
 }
 
+string Player::getStrategyName(){
+    return strategy->getName();
+}

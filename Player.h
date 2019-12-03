@@ -61,6 +61,7 @@ public:
 	void setStrategy(PlayerStrategies *newStrategy){
 		this->strategy = newStrategy;
 	}
+        string getStrategyName();
 private:
     int* id; //id of a player
     std::string* name; //name of a player

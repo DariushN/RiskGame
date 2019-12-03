@@ -61,7 +61,7 @@ void Deck::initializeDeck(vector<Territory *> territories) {
     //Creating a types vectors with the correct amount of each
     vector<string> types;
     int typeSize = territories.size()/3;
-    types.insert(types.end(), typeSize, "Infantry");
+    types.insert(types.end(), typeSize + territories.size()%3, "Infantry");
     types.insert(types.end(), typeSize, "Artillery");
     types.insert(types.end(), typeSize, "Cavalry");
     //Shuffling types vector to get different ones in a row

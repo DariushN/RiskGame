@@ -1,4 +1,5 @@
 #include "PlayerStrategies.h"
+#include "Map.h"
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -559,7 +560,8 @@ void BenevolentComputer::attack(Map *map, Player *player) {
 }
 
 struct comparisonClass {
-	bool operator()(Territory *&i, Territory *&j) { return (i->getTroops() < j->getTroops()); }
+	bool operator()(Territory* &i, Territory* &j) { return (i->getTroops() < j->getTroops()); }
+        bool operator()(Territory* const &i, Territory* const j) { return (i->getTroops() < j->getTroops()); }
 } comparisonFunction;
 
 void BenevolentComputer::fortify(Player* player){
@@ -773,6 +775,7 @@ void RandomComputer::fortify(Player *player) {
 			}
 		}
 	}
+        if(indexes.size() == 0) return;
 	int r = rand() % indexes.size();
 	for(std::vector<Territory>::size_type i = 0; i != player->lands[indexes[r]]->adjacents.size(); i++){
 		if(player->lands[indexes[r]]->adjacents[i]->getOwner()->getName() == player->getName()){
@@ -801,13 +804,15 @@ void RandomComputer::fortify(Player *player) {
 void CheaterComputer::attack(Map *map, Player *player) {
     cout << "Cheater attacks!"<< endl<<endl;
 
-    for(auto x:player->lands){
+    for(auto&& x:player->lands){
         cout << "\n\nAttacker plans on cheating with territory " << x->getName() << endl;
-        for(auto y:x->adjacents){
+        for(auto&& y:x->adjacents){
             if(y->getOwner()->getName()!=x->getOwner()->getName()){
+            //if(y->getOwner()!=x->getOwner()){
                 cout << "Attacker cheats and gets adjacent territory " << y->getName() << endl;
                 //Remove territory lost from defense player's owned lands
                 player->lands.push_back(y);
+                //y->getOwner()->lands.remove(y);
                 remove(y->getOwner()->lands.begin(), y->getOwner()->lands.end(),
                        y);
                 //resize the array
