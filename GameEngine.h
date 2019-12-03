@@ -67,7 +67,7 @@ private:
 	Player* turn;
 	vector<string> get_all_files_names_within_folder(string folder); // Vector of file names within directory
     string* phase;
-    string TournametGameLoop(Map* m,Player* p, int n_turns);
+    string TournamentGameLoop(Map* m,Player* p, int n_turns);
     
 };
 

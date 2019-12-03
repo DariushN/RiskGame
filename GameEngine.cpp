@@ -25,9 +25,11 @@ GameEngine::GameEngine() {
 	players = nullptr;
 	deck = nullptr;
 	turn = nullptr;
+	N_players = 0;
 	phase = new std::string("");
 }
 
+// Parametrized constructor
 GameEngine::GameEngine(Map* m, Player* p, int n){
 	MAP = m;
 	players = p;
@@ -45,26 +47,28 @@ GameEngine::GameEngine(const GameEngine& orig) {
 	phase = new std::string(*orig.phase);
 }
 
+// Assignment operator
 GameEngine& GameEngine::operator=(const GameEngine &orig) {
-    players = orig.players;
-    deck = orig.deck;
-    MAP = orig.MAP;
-    turn = orig.turn;
-    phase = orig.phase;
-     if (&orig==this){
-           delete players;
-           delete deck;
-           delete MAP;
-           delete turn;
-           delete phase;
-           players = new Player(*orig.players);
-           deck = new Deck(*orig.deck);
-           MAP = new Map(*orig.MAP);
-           turn = new Player(*orig.turn);
-           phase = new std::string(*orig.phase);
-       }
-     return *this;
+	players = orig.players;
+	deck = orig.deck;
+	MAP = orig.MAP;
+	turn = orig.turn;
+	phase = orig.phase;
+	if (&orig==this){
+		delete players;
+		delete deck;
+		delete MAP;
+		delete turn;
+		delete phase;
+		players = new Player(*orig.players);
+		deck = new Deck(*orig.deck);
+		MAP = new Map(*orig.MAP);
+		turn = new Player(*orig.turn);
+		phase = new std::string(*orig.phase);
+	}
+	return *this;
 }
+
 // Destructor
 GameEngine::~GameEngine() {
 	if(MAP != nullptr) delete MAP;
@@ -182,8 +186,8 @@ void GameEngine::SelectMaps(){
 		keepUserTrapped = !(MAP->isValid());
 		// Error message if chosen file was invalid
 		if(keepUserTrapped){
-                    delete MAP;
-                    cout<<"Map file chosen was invalid, please choose another."<<endl;
+			delete MAP;
+			cout<<"Map file chosen was invalid, please choose another."<<endl;
 		}
 	}
 	cout<<"Map selected is: " <<MAP->getName()<<endl;
@@ -313,274 +317,286 @@ void GameEngine::mainGameLoop(Map* MAP, std::vector<Player*> players){
 	}
 }
 
+// Helper method to print territories
 void GameEngine::printTerritories(){
 	for(auto&& x:MAP->Territories) cout<<x->toString();
 }
 
 void GameEngine::begin(){
-    int n_maps = 0;
-    int n_players = 0;
-    vector<Map*> maps;
-    int n_games = 0;
-    int max_rounds;
-    string* winner_names;
-    char a = 0;
-    StatsObserver S(&(*this));
-    cout<<"Beginning Risk Game!"<<endl;
-    while(a!= '0' && a != '1'){
-        cout<<"Please enter 0 for default multiplayer mode, or 1 for tournament mode:\n\t";
-        cin>>a;
-    }
-    if(a == '0'){
-        Setup();
-        mainGameLoop();
-    }else if(a =='1'){
-        a = 0;
-        while( a < '1' || a >'5'){
-            cout<<"How many maps will be used (1-5)?"<<endl<<"\t";
-            cin>>a;
-        }
-        //Get number of maps
-        n_maps = a - '0';
-        vector<string> names = get_all_files_names_within_folder("Maps");
-        for(int i = 0; i < n_maps; i++){ 
-            bool keepUserTrapped = true; // Boolean to ensure valid user input
-            while(keepUserTrapped){
-                    cout<<"The following maps are available:\n";
-                    int n = 0;
-                    // Print directory of maps
-                    for(auto&& x:names){
-                            cout<<"\t"<<to_string(n++)<<"\t"<<x<<endl;
-                    }
-                    int user_choice = n+1;
-                    while(user_choice <0 || user_choice >n){
-                            cout<<"Enter index of desired map (0-" << to_string(n-1)<<") or "<<to_string(n) << " to enter your own: ";
-                            cin>>user_choice;
-                            while(std::cin.fail()) {
-                                    std::cin.clear();
-                                    std::cin.ignore();
-                                    std::cout << "Please Enter a number: ";
-                                    std::cin >> user_choice;
-                            }
-                    }
-                    string filename;
-                    // Allow user to enter their own path if desired
-                    if(user_choice == n){
-                            cout<<"please enter desired map file with path (if in other directory): "<<endl;
-                            cin>>filename;
-                    }else{
-                            filename = "Maps/" + names.at(user_choice);
-                    }
-                    MapLoader* mapLoader = new MapLoader();
-                    MAP = mapLoader->MapBuilder(filename);
-                    keepUserTrapped = !(MAP->isValid());
-                    // Error message if chosen file was invalid
-                    if(keepUserTrapped){
-                        delete MAP;
-                        cout<<"Map file chosen was invalid, please choose another."<<endl;
-                    }
-            }
-            cout<<"Map selected is: " <<MAP->getName()<<endl;
-            maps.push_back(MAP);
-        }
-        a = 0;
-        while(a < '2' || a > '4'){
-            cout<<"Please select number of players in Tournament (2-4):\t";
-            cin >>a;
-        }
-        //Get number of players and strategies for them
-        n_players = a - '0';
-        N_players = n_players;
-        players = new Player[n_players];
-        for(int i = 0; i < n_players; i++){
-            GameObserver* G = new GameObserver(&players[i]);//Create and attach game observer
-            cout<<"For player #"<<i<<", which strategy should be used?"<<endl;
-            cout<<"\tOptions are:\n";
-            cout<<"\t\t1.AggressiveComputer"<<endl;
-            cout<<"\t\t2.BenevolentComputer"<<endl;
-            cout<<"\t\t3.CheaterComputer"<<endl;
-            cout<<"\t\t4.RandomComputer"<<endl;
-            a = 0;
-            while(a < '1' || a >'4'){
-                cout<<"Please choose an option from 1-4:\t";
-                cin>>a;
-            }
-            if(a=='1'){
-                players[i].setStrategy(new AggressiveComputer());
-                players[i].setName("p"+to_string(i)+"_AC");
-                players[i].setId(i);
-            }else if(a=='2'){
-                players[i].setStrategy(new BenevolentComputer());
-                players[i].setName("p"+to_string(i)+"_BC");
-                players[i].setId(i);
-            }else if(a=='3'){
-                players[i].setStrategy(new CheaterComputer());
-                players[i].setName("p"+to_string(i)+"_CC");
-                players[i].setId(i);
-            }else if(a=='4'){
-                players[i].setStrategy(new RandomComputer());
-                players[i].setName("p"+to_string(i)+"_RC");
-                players[i].setId(i);
-            }
-        }
-        //get number of games
-        a = 0;
-        while(a<'1' || a > '5'){
-            cout<<"How many games should be played in each map (1-5)?"<<endl<<"\t";
-            cin>>a;
-        }
-        n_games = a - '0';
-        
-        //Get number of rounds before it is considered a draw.
-        max_rounds = 0;
-        while(max_rounds < 3 || max_rounds > 50){
-            cout<<"How many rounds per game before being declared a draw (3-50)?\t";
-            cin>>max_rounds;
-            while(std::cin.fail()) {
-                std::cin.clear();
-                std::cin.ignore();
-                std::cout << "Please Enter a number: ";
-                std::cin >> max_rounds;
-            }
-        }
-        cout<<"Current Status (debugging info)"<<endl;
-        cout<<"n_maps:\t"<<n_maps<<endl;
-        cout<<"n_players\t"<<n_players<<endl;
-        cout<<"Players:\n";
-        for(int i =0; i < n_players; i++) cout<<"\t"<<players[i].getName()<<endl;
-        cout<<"M:";
-        for(auto&& x:maps) cout<<x->getName() <<",";
-        cout<<"\b \b\n";
-        cout<<"n_games: "<<n_games<<endl;
-        cout<<"max_rounds: "<<max_rounds<<endl;
-        
-        winner_names = new string[n_games*n_maps];
-        if(winner_names == nullptr){
-            cerr<<"Error: insufficient memory for winner logs"<<endl;
-            exit(42);
-        }
-        //Actual Tournament
-        for(int i = 0; i < n_maps; i++){
-            MAP = maps.at(i);
-            cout<<"map is: "<< MAP->getName()<<endl;
-            for(int j = 0; j < n_games; j++){
-                winner_names[j + n_games*i] = TournametGameLoop(MAP,players,max_rounds);
-                //cout<<i<<"\t"<<j<<endl;
-            }
-        }
-        cout<<"M: ";
-        for(auto && x:maps) cout<<x->getName()<<",";
-        cout<<"\b \b\n";
-        cout<<"P: ";
-        for(int i =0; i < n_players; i++) cout<<players[i].getStrategyName()<<",";
-        cout<<"\b \b\n";
-        cout<<"G: "<<n_games<<endl;
-        cout<<"D: "<<max_rounds<<endl;
-        cout<<"\n\n";
-        printElement(" ",25);
-        for(int i = 0; i < n_games; i++){
-            printElement("Game"+to_string(i),10);
-        }
-        cout<<endl;
-        for(int i = 0; i < n_maps; i++){
-            printElement(maps.at(i)->getName(),25);
-            for(int j = 0; j < n_games; j++){
-                printElement(winner_names[j + n_games*i],10);
-            }
-            cout<<endl;
-        }
-        
-    }
+
+	// Initialize variables
+
+	int n_maps = 0;
+	int n_players = 0;
+	vector<Map*> maps;
+	int n_games = 0;
+	int max_rounds;
+	string* winner_names;
+	char a = 0;
+
+	// Attach observer
+	StatsObserver S(&(*this));
+
+	// Start game
+
+	cout<<"Beginning Risk Game!"<<endl;
+
+	while(a!= '0' && a != '1'){
+		cout<<"Please enter 0 for default multiplayer mode, or 1 for tournament mode:\n\t";
+		cin>>a;
+	}
+	if(a == '0'){
+		Setup();
+		mainGameLoop();
+	}else if(a =='1'){ // Enter tournament mode
+		a = 0;
+		// Get number of maps
+		while( a < '1' || a >'5'){
+			cout<<"How many maps will be used (1-5)?"<<endl<<"\t";
+			cin>>a;
+		}
+
+		n_maps = a - '0';
+		vector<string> names = get_all_files_names_within_folder("Maps");
+		for(int i = 0; i < n_maps; i++){
+			bool keepUserTrapped = true; // Boolean to ensure valid user input
+			while(keepUserTrapped){
+				cout<<"The following maps are available:\n";
+				int n = 0;
+				// Print directory of maps
+				for(auto&& x:names){
+					cout<<"\t"<<to_string(n++)<<"\t"<<x<<endl;
+				}
+				int user_choice = n+1;
+				while(user_choice <0 || user_choice >n){
+					cout<<"Enter index of desired map (0-" << to_string(n-1)<<") or "<<to_string(n) << " to enter your own: ";
+					cin>>user_choice;
+					while(std::cin.fail()) {
+						std::cin.clear();
+						std::cin.ignore();
+						std::cout << "Please Enter a number: ";
+						std::cin >> user_choice;
+					}
+				}
+				string filename;
+				// Allow user to enter their own path if desired
+				if(user_choice == n){
+					cout<<"please enter desired map file with path (if in other directory): "<<endl;
+					cin>>filename;
+				}else{
+					filename = "Maps/" + names.at(user_choice);
+				}
+				MapLoader* mapLoader = new MapLoader();
+				MAP = mapLoader->MapBuilder(filename);
+				keepUserTrapped = !(MAP->isValid());
+				// Error message if chosen file was invalid
+				if(keepUserTrapped){
+					delete MAP;
+					cout<<"Map file chosen was invalid, please choose another."<<endl;
+				}
+			}
+			cout<<"Map selected is: " <<MAP->getName()<<endl;
+			maps.push_back(MAP);
+		}
+		a = 0;
+		// Get number of players and strategies for them
+		while(a < '2' || a > '4'){
+			cout<<"Please select number of players in Tournament (2-4):\t";
+			cin >>a;
+		}
+
+		n_players = a - '0';
+		N_players = n_players;
+		players = new Player[n_players];
+
+		for(int i = 0; i < n_players; i++){
+			GameObserver* G = new GameObserver(&players[i]);//Create and attach game observer
+
+			cout<<"For player #"<<i<<", which strategy should be used?"<<endl;
+			cout<<"\tOptions are:\n";
+			cout<<"\t\t1.AggressiveComputer"<<endl;
+			cout<<"\t\t2.BenevolentComputer"<<endl;
+			cout<<"\t\t3.CheaterComputer"<<endl;
+			cout<<"\t\t4.RandomComputer"<<endl;
+			a = 0;
+			while(a < '1' || a >'4'){
+				cout<<"Please choose an option from 1-4:\t";
+				cin>>a;
+			}
+			// Set players
+			if(a=='1'){
+				players[i].setStrategy(new AggressiveComputer());
+				players[i].setName("p"+to_string(i)+"_AC");
+				players[i].setId(i);
+			}else if(a=='2'){
+				players[i].setStrategy(new BenevolentComputer());
+				players[i].setName("p"+to_string(i)+"_BC");
+				players[i].setId(i);
+			}else if(a=='3'){
+				players[i].setStrategy(new CheaterComputer());
+				players[i].setName("p"+to_string(i)+"_CC");
+				players[i].setId(i);
+			}else if(a=='4'){
+				players[i].setStrategy(new RandomComputer());
+				players[i].setName("p"+to_string(i)+"_RC");
+				players[i].setId(i);
+			}
+		}
+
+		a = 0;
+		// Get number of games
+		while(a<'1' || a > '5'){
+			cout<<"How many games should be played in each map (1-5)?"<<endl<<"\t";
+			cin>>a;
+		}
+		n_games = a - '0';
+
+		// Get number of rounds before it is considered a draw.
+		max_rounds = 0;
+		while(max_rounds < 3 || max_rounds > 50){
+			cout<<"How many rounds per game before being declared a draw (3-50)?\t";
+			cin>>max_rounds;
+			while(std::cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore();
+				std::cout << "Please Enter a number: ";
+				std::cin >> max_rounds;
+			}
+		}
+
+
+		winner_names = new string[n_games*n_maps];
+		if(winner_names == nullptr){
+			cerr<<"Error: insufficient memory for winner logs"<<endl;
+			exit(42);
+		}
+
+		// Start tournament
+		for(int i = 0; i < n_maps; i++){
+			MAP = maps.at(i);
+			cout<<"Map is: "<< MAP->getName()<<endl;
+			for(int j = 0; j < n_games; j++){
+				// Store the winner of each game
+				winner_names[j + n_games*i] = TournamentGameLoop(MAP,players,max_rounds);
+			}
+		}
+
+		// Display report at the end of the game
+
+		cout<<"\nM: ";
+		for(auto && x:maps) cout<<x->getName()<<",";
+		cout<<"\b \b\n";
+
+		cout<<"P: ";
+		for(int i =0; i < n_players; i++) cout<<players[i].getStrategyName()<<",";
+		cout<<"\b \b\n";
+
+		cout<<"G: "<<n_games<<endl;
+		cout<<"D: "<<max_rounds<<endl;
+		cout<<"\n\n";
+
+		// Print table of results
+		printElement(" ",25);
+		for(int i = 0; i < n_games; i++){
+			printElement("Game"+to_string(i),10);
+		}
+		cout<<endl;
+		for(int i = 0; i < n_maps; i++){
+			printElement(maps.at(i)->getName(),25);
+			for(int j = 0; j < n_games; j++){
+				printElement(winner_names[j + n_games*i],10);
+			}
+			cout<<endl;
+		}
+	}
 }
 
-string GameEngine::TournametGameLoop(Map* m, Player* p, int n_turnsMAX){
-    //Setup round
-    cout<<"emptying old territories"<<endl;
-    for(int i = 0; i < N_players; i++){//Empty old territories
-        while(!players[i].lands.empty()) players[i].lands.pop_back();
-    }
-    MAP = m;
-    
-    cout<<"Initializing deck"<<endl;
-    deck = new Deck(MAP->Territories);//initialize deck
-    
-    cout<<"selecting number of armies"<<endl;
-    int A = 0;// Number of armies
-    switch(N_players){
-    case 2:
-            A = 40;
-            break;
-    case 3:
-            A = 35;
-            break;
-    case 4:
-            A = 30;
-            break;
-    default:
-            cerr<<"Error, invalid number of players.";
-            exit(1);
-    }
-    int n = 0;
-    
-    cout<<"Giving out territories"<<endl;
-    for(auto&& x:MAP->Territories){
-        players[n%N_players].lands.push_back(x);
-        x->setOwner(&players[n%N_players]);
-        n++;
-    }
-    
-    // In a round-robin manner, assign each player's armies
-    cout<<"Assigning Armies"<<endl;
-    for(int i = 0; i <N_players; i++){
-        players[i].setArmies(A);
-        int nLands = players[i].lands.size();
-        n = 0;
-        while(players[i].getArmies() != 0){
-            players[i].setArmies(players[i].getArmies()-1);
-            players[i].lands.at(n%nLands)->incTroops();
-            n++;
-        }
-    }
-   
-    
-    //Begin game
-    bool isWinner = false;
-    int n_turns = 0;
-    // While the game is not won, allow each player to make a move
-    cout<<"begining actual war"<<endl;
-    while(!isWinner){
-        // When all countries are owned by a player, the game is won
-        for(int i = 0; i < this->N_players; i++){
-            turn = &players[i]; // Set turn
-            // Determine if the player has won
-            if(players[i].lands.size() == this->MAP->Territories.size()) {
-                    Notify(); // Display final stats and a celebratory message
-                    isWinner = true;
-                    //cout<<"Player "<<players[i].getName() 
-                    return players[i].getName();
-            }else if(players[i].lands.size() == 0){ // If the player lost, print a message and display final stats
-                    cout << "\n\t---" << players[i].getName() << " has no more lands and is out of the game!---" << endl;
-                    Notify();
-                    continue;
-            }
+string GameEngine::TournamentGameLoop(Map* m, Player* p, int n_turnsMAX){
 
-            std::cout <<"\n\n" << players[i].getName() << "'s turn" << std::endl;
-            Notify(); // Display stats
+	// Setup round
+	for(int i = 0; i < N_players; i++){ // Empty old territories
+		while(!players[i].lands.empty()) players[i].lands.pop_back();
+	}
 
-            this->setPhase(" Reinforcement"); // Set phase
-            players[i].reinforce(this->MAP);
+	MAP = m;
+	deck = new Deck(MAP->Territories); // Initialize deck
 
-            this->setPhase(" Attack");
-            players[i].attack(this->MAP);
+	int A = 0; // Number of armies
+	switch(N_players){
+	case 2:
+		A = 40;
+		break;
+	case 3:
+		A = 35;
+		break;
+	case 4:
+		A = 30;
+		break;
+	default:
+		cerr<<"Error, invalid number of players.";
+		exit(1);
+	}
+	int n = 0;
 
-            this->setPhase(" Fortification");
-            players[i].fortify();
-        }
-        n_turns++;
-        if(n_turns >= n_turnsMAX){
-            return "Draw";
-        }
-    }
+	// Giving out territories
+	for(auto&& x:MAP->Territories){
+		players[n%N_players].lands.push_back(x);
+		x->setOwner(&players[n%N_players]);
+		n++;
+	}
+
+	// In a round-robin manner, assign each player's armies
+	cout<<"Assigning Armies"<<endl;
+	for(int i = 0; i <N_players; i++){
+		players[i].setArmies(A);
+		int nLands = players[i].lands.size();
+		n = 0;
+		while(players[i].getArmies() != 0){
+			players[i].setArmies(players[i].getArmies()-1);
+			players[i].lands.at(n%nLands)->incTroops();
+			n++;
+		}
+	}
+
+
+	// Begin game
+	bool isWinner = false;
+	int n_turns = 0;
+
+	// While the game is not won, allow each player to make a move
+	while(!isWinner){
+		// When all countries are owned by a player, the game is won
+		for(int i = 0; i < this->N_players; i++){
+			turn = &players[i]; // Set turn
+			// Determine if the player has won
+			if(players[i].lands.size() == this->MAP->Territories.size()) {
+				Notify(); // Display final stats and a celebratory message
+				isWinner = true;
+				return players[i].getName();
+			}else if(players[i].lands.size() == 0){ // If the player lost, print a message and display final stats
+				cout << "\n\t---" << players[i].getName() << " has no more lands and is out of the game!---" << endl;
+				Notify();
+				continue;
+			}
+
+			std::cout <<"\n\n" << players[i].getName() << "'s turn" << std::endl;
+			Notify(); // Display stats
+
+			this->setPhase(" Reinforcement"); // Set phase
+			players[i].reinforce(this->MAP);
+
+			this->setPhase(" Attack");
+			players[i].attack(this->MAP);
+
+			this->setPhase(" Fortification");
+			players[i].fortify();
+		}
+		n_turns++;
+		if(n_turns >= n_turnsMAX){
+			return "Draw";
+		}
+	}
+	return "";
 }
 
 
